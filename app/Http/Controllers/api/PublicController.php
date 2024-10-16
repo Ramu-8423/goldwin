@@ -23,18 +23,23 @@ class PublicController extends Controller
             $validator->stopOnFirstFailure();
             
             if($validator->fails()){
-                 return response()->json(['status' => 400,'message' => $validator->errors()->first()]);
+                 return response()->json(['status' => 400,'message' => $validator->errors()->first(),'game_status'=>1]);
             }
             
             $terminal_id = $request->terminal_id;
             $password = $request->password;
             
             $login_status = DB::table('admins')->where('terminal_id',$terminal_id)->where('password',$password)->where('status',1)->where('role_id',4)->first();
+            $game_status = DB::table('game_settings')->where('id',1)->value('status');
             
            if($login_status){
-               return response()->json(['status'=>200,'message'=>'login successfully.','id'=>$login_status->id,'terminal_id'=>$login_status->terminal_id]);
+               if($game_status==2){
+                   return response()->json(['status'=>400,'message'=>'The game is currently paused.','game_status'=>2]);
+               }else{
+                    return response()->json(['status'=>200,'message'=>'login successfully.','id'=>$login_status->id,'terminal_id'=>$login_status->terminal_id,'game_status'=>1]);
+               }
            }else{
-                return response()->json(['status'=>400,'message'=>'Invalid user or credentials!']);
+                return response()->json(['status'=>400,'message'=>'Invalid user or credentials!','game_status'=>1]);
            }
      }
     
@@ -45,14 +50,19 @@ class PublicController extends Controller
              ]);
             $validator->stopOnFirstFailure();
             if($validator->fails()){
-                return response()->json(['status' => 400,'message' => $validator->errors()->first()]);
+                return response()->json(['status' => 400,'message' => $validator->errors()->first(),'game_status'=>1]);
             }
      $data = DB::table('admins')->where('id',$id)->where('status',1)->where('role_id',4)->first();
+     $game_status = DB::table('game_settings')->where('id',1)->value('status');
      
      if($data){
-         return response()->json(['status'=>200,'message'=>'Admin record found','wallet'=>$data->wallet]);
+         if($game_status==2){
+            return response()->json(['status'=>400,'message'=>'The game is currently paused.','wallet'=>$data->wallet,'game_status'=>2]);
+         }else{
+             return response()->json(['status'=>200,'message'=>'Admin record found','wallet'=>$data->wallet,'game_status'=>1]);
+         }
      }else{
-        return response()->json(['status'=>400,'message'=>'Invalid credentials or user!']); 
+        return response()->json(['status'=>400,'message'=>'Invalid credentials or user!','game_status'=>1]); 
      }
         
     }

@@ -126,7 +126,7 @@ class BetController extends Controller
                 if($status==1){
                 foreach($bet_details_array as $item){
                     $point = $item->points;
-                    $point_value = $point*50;
+                    $point_value = $point*5;
                     $card_number = $item->card_number;
                     
                      DB::table('bet_logs')->where('id',$card_number)->update([

@@ -49,7 +49,6 @@ Route::post('/point_details',[BetController::class,'point_details']);
 Route::get('/result_declare',[CroneController::class,'result_declare']);
 Route::get('/update_bet_logs',[CroneController::class,'update_bet_logs']);
 
-Route::get('/result_declare_new',[CroneController::class,'result_declare_new']);
 
 
 

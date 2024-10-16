@@ -3,7 +3,7 @@
 
      <div class="container-fluid mt-5">
           
-               <div class="row" style="backgorund-color: #343a40; border-radius: 5px;margin-bottom:10px; ">
+               <div class="row" style="backgorund-color: #fff; border-radius: 5px;margin-bottom:10px; ">
                      <div class="col-md-3 ">
                         <b class="city" style="font-weight:bold;font-size:15px;">Result Announcement Time -</b>
                     </div>
@@ -16,50 +16,55 @@
                     </div>
                </div>
     
-             <form id="filterForm">
-                <div class="row" style="backgorund-color: #343a40; border-radius: 5px; ">
-                    <div class="col-md-1 ">
-                        <h5 class="city">Status </h5>
-                    </div>
-                    <div class="col-md-1">
-                            <select id="status">
-                                    <option value="1">On</option>
-                                     <option value="2">Off</option>
-                                </select>
-                    </div>
-                    <div class="col-md-1 ">
-                        <h5 class="city">Result </h5>
-                    </div>
-                    <div class="col-md-2">
-                            <select id="result-type" class="form-control">
-                                    <option value="1">Manual</option>
-                                    <option value="2">Lucky Draw</option>
-                                    <option value="3">Auto</option>
-                            </select>
-                    </div>
-                    <div class="col-md-1 ">
-                        <h5 class="city">Win %</h5>
-                    </div>
-                    <div class="col-md-1">
-                             <select id="winning-percentage">
-                                    <option value="25">25-50</option>
-                                    <option value="50">50-75</option>
-                                    <option value="75">75-100</option>
-                                    <option value="100">100-125</option>
-                                </select>
-                    </div>
-                     <div class="col-md-2">
-                         <h5 class="city">site msg - </h5>
-                     </div>
-                      <div class="col-md-2">
-                              <textarea name="textarea_name" id="textarea_id" rows="2" cols="10"  placeholder="site msg"></textarea>
-                      </div>
-                    <div class="col-md-1">
-                        <button type="submit" name="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                   
-                </div>
-            </form>
+             <form id="filterForm" action="{{route('game_setting')}}" method="post">
+    @csrf
+    <div class="row">
+        <div class="col-md-1">
+            <h5 class="city">Status</h5>
+        </div>
+        <div class="col-md-1">
+            <select id="status" name="status">
+                <option value="1" {{$game_settings->status==1?'selected':''}}>On</option>
+                <option value="2" {{$game_settings->status==2?'selected':''}}>Off</option>
+            </select>
+        </div>
+        
+        <div class="col-md-1">
+            <h5 class="city">Result</h5>
+        </div>
+        <div class="col-md-2">
+            <select id="result-type" class="form-control" name="result">
+                <option value="1" {{$game_settings->result_type==1?'selected':''}}>Manual</option>
+                <option value="2" {{$game_settings->result_type==2?'selected':''}}>Lucky Draw</option>
+                <option value="3" {{$game_settings->result_type==3?'selected':''}}>Auto</option>
+            </select>
+        </div>
+
+        <div class="col-md-1">
+            <h5 class="city">Win %</h5>
+        </div>
+        <div class="col-md-1">
+            <select id="winning-percentage" name="percentage">
+                <option value="25" {{$game_settings->winning_per==25?'selected':''}}>25-50</option>
+                <option value="50" {{$game_settings->winning_per==50?'selected':''}}>50-75</option>
+                <option value="75" {{$game_settings->winning_per==75?'selected':''}}>75-100</option>
+                <option value="100" {{$game_settings->winning_per==100?'selected':''}}>100-125</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <h5 class="city">Site Msg</h5>
+        </div>
+        <div class="col-md-2">
+            <textarea id="textarea_id" rows="2" cols="20" name="site_message" placeholder="site msg">{{$game_settings->site_message}}</textarea>
+        </div>
+
+        <div class="col-md-1">
+            <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</form>
+
                            
 
 

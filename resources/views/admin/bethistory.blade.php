@@ -5,50 +5,81 @@
     <div class="white_shd full margin_bottom_30">
         <div class="full graph_head">
             <div class="heading1 margin_0">
-               <form action="{{ route('admin.bethistory') }}" method="GET">
+                @if($authrole == 1)
+   <form action="{{ route('admin.bethistory') }}" method="GET">
     <div class="row d-flex">
         <!-- Stokist Section -->
-        <div class="col-sm-3 text-center  ml-2">
+        <div class="col-sm-3 text-center ml-2">
             <span class="me-2">Stokist</span>
-            <select name="st_terminal_id" class="form-control select2 me-2" style="width: auto;">
+            <select id="stockist-select" name="st_terminal_id" class="form-control select2 me-2" style="width: auto;">
                 <option value="">All Stokist Terminal</option>
                 @foreach($users as $admin)
-                @if($admin->role_id == 2)
-                <option value="{{ $admin->terminal_id }}">{{ $admin->terminal_id }}</option>
-                @endif
+                    @if($admin->adminrole_id == 2)
+                        <option value="{{ $admin->terminal_id }}" 
+                            {{ (request('st_terminal_id') == $admin->terminal_id) ? 'selected' : '' }}>
+                            {{ $admin->terminal_id }}
+                        </option>
+                    @endif
                 @endforeach
             </select>
         </div>
-        <!-- Sustokist Section -->
-        <div class="col-sm-3 text-center ml-2">
+
+        <!-- Substockist Section -->
+        <div class="col-sm-3 text-center ml-1">
             <span class="me-2">Sustokist</span>
-            <select name="sub_terminal_id" class="form-control select2 me-2" style="width: auto;">
+            <select id="substockist-select" name="sub_terminal_id" class="form-control select2 me-2" style="width: auto;">
                 <option value="">All Sustokist Terminal</option>
-                @foreach($users as $admin)
-                @if($admin->role_id == 3)
-                <option value="{{ $admin->terminal_id }}">{{ $admin->terminal_id }}</option>
-                @endif
-                @endforeach
+                <!-- Populate substockist options as needed -->
             </select>
         </div>
+
         <!-- User Section -->
-        <div class="col-sm-3 text-center ml-2">
+        <div class="col-sm-3 text-center ml-1">
             <span class="me-2">User</span>
-            <select name="use_terminal_id" class="form-control select2 me-2" style="width: auto; display: inline-block;">
+            <select id="user-select" name="use_terminal_id" class="form-control select2 me-2" style="width: auto;">
                 <option value="">All User Terminal</option>
-                @foreach($users as $admin)
-                @if($admin->role_id == 4)
-                <option value="{{ $admin->terminal_id }}">{{ $admin->terminal_id }}</option>
-                @endif
-                @endforeach
+                <!-- Populate user options as needed -->
             </select>
         </div>
-         
+
         <div class="col-sm-1">
-            <button type="submit" class="btn btn-primary mt-4 " >Search</button>
+            <button type="submit" class="btn btn-primary mt-4">Search</button>
         </div>
     </div>
 </form>
+@elseif($authrole == 2)
+<form action="{{ route('admin.bethistory') }}" method="GET">
+    <div class="row d-flex">
+        <!-- Substockist Section -->
+        <div class="col-sm-3 text-center ml-1">
+            <span class="me-2">Substokist</span>
+            <select id="substockist-select" name="sub_terminal_id" class="form-control select2 me-2" style="width: auto;">
+                <option value="">All Substokist Terminal</option>
+                @foreach($users as $admin)
+                    @if($admin->adminrole_id == 3)
+                        <option value="{{ $admin->terminal_id }}">{{ $admin->terminal_id }}</option>
+                    @endif
+                @endforeach
+            </select>
+        </div>
+
+        <!-- User Section -->
+        <div class="col-sm-3 text-center ml-1">
+            <span class="me-2">User</span>
+            <select id="user-select" name="use_terminal_id" class="form-control select2 me-2" style="width: auto;">
+                <option value="">All User Terminal</option>
+                <!-- User options will be populated here -->
+            </select>
+        </div>
+
+        <div class="col-sm-1">
+            <button type="submit" class="btn btn-primary mt-4">Search</button>
+        </div>
+    </div>
+</form>
+@endif
+
+
         
 
             </div>
@@ -184,4 +215,86 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+    // Stockist selection change
+    $('#stockist-select').on('change', function() {
+        var stockistId = $(this).val();
+        if (stockistId) {
+            // Get Substockists based on selected stockist using AJAX
+            $.ajax({
+                url: '/get-stockist-subordinates/' + stockistId, // Ensure this URL is correct
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Clear the Substockist dropdown and append new data
+                    $('#substockist-select').empty();
+                    $('#substockist-select').append('<option value="">All Sustokist Terminal</option>');
+                    $.each(data, function(key, value) {
+                        $('#substockist-select').append('<option value="' + value.id + '">' + value.terminal_id + '</option>');
+                    });
+
+                    // Clear user dropdown as stockist has changed
+                    $('#user-select').empty();
+                    $('#user-select').append('<option value="">All User Terminal</option>');
+                },
+                error: function() {
+                    alert('Error fetching substockists');
+                }
+            });
+        } else {
+            $('#substockist-select').empty();
+            $('#user-select').empty();
+        }
+    });
+
+    // Substockist selection change
+    $('#substockist-select').on('change', function() {
+        var substockistId = $(this).val();
+        if (substockistId) {
+            // Get Users under selected substockist using AJAX
+            $.ajax({
+                url: '/get-substockist-users/' + substockistId, // Ensure this URL is correct
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Clear the User dropdown and append new data
+                    $('#user-select').empty();
+                    $('#user-select').append('<option value="">All User Terminal</option>');
+                    $.each(data, function(key, value) {
+                        $('#user-select').append('<option value="' + value.terminal_id + '">' + value.terminal_id + '</option>');
+                    });
+                },
+                error: function() {
+                    alert('Error fetching users');
+                }
+            });
+        } else {
+            $('#user-select').empty();
+        }
+    });
+});
+
+</script>
+<script>
+    $(document).ready(function() {
+        // Initialize select2 for all select boxes
+        $('#stockist-select').select2({
+            placeholder: "All Stokist Terminal",
+            allowClear: true
+        });
+
+        $('#substockist-select').select2({
+            placeholder: "All Substockist Terminal",
+            allowClear: true
+        });
+
+        $('#user-select').select2({
+            placeholder: "All User Terminal",
+            allowClear: true
+        });
+    });
+</script>
+
 @endsection

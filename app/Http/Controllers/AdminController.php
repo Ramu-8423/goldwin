@@ -16,6 +16,25 @@ class AdminController extends Controller
 {
     
     
+      public function game_setting(Request $req){
+        $site_message = $req->site_message;
+        $percentage = $req->percentage;
+        $result = $req->result;
+        $status = $req->status;
+        $a =   DB::table('game_settings')->where('id',1)->update([
+           'site_message'=>$site_message,
+           'winning_per'=>$percentage,
+           'result_type'=>$result,
+           'status'=>$status,
+           ]);
+           
+          if($a){
+           return redirect()->back()->with('success','Updated successfully..');   
+          }else{
+             return redirect()->back()->with('error','Failed to  update..');   
+          }
+    }
+    
     
     public function add_role(Request $request){
         $login_id = session('id');
@@ -38,14 +57,15 @@ class AdminController extends Controller
        }else{
            $row = DB::table('admins')->where('terminal_id',$under_role_terminal_id)->first();
            if($row->role_id==2){
-               $inside_stockist = $row->terminal_id;
+               $inside_stockist = $row->id;
            }else{
                $inside_stockist = $row->inside_stockist;
                $inside_substockist = $row->id;
            }
            
        }
-       
+     //   dd($role_id,$inside_stockist,$inside_substockist,$terminal_id,$password,$login_id);
+        
        $insert = DB::table('admins')->insert([
                          'role_id'=>$role_id,
                          'inside_stockist'=>$inside_stockist,
@@ -55,7 +75,7 @@ class AdminController extends Controller
                          'created_by'=>$login_id,
                          'status'=>2
                 ]);
-                
+               
                 if($insert){
                     return redirect()->back()->with('success','Created successfully..');
                 }else{
@@ -163,7 +183,8 @@ class AdminController extends Controller
         return redirect()->route('login_page');
     }
          public function cardfive(Request $request){
-           return view('prediction.12card5');
+             $game_settings = DB::table('game_settings')->where('id',1)->first();
+           return view('prediction.12card5')->with('game_settings',$game_settings);
           }
     
      public function password(){
@@ -425,6 +446,7 @@ public function stokistlist(Request $request) {
     // Filter based on role_id (Stockist or Substockist)
     if ($role_id == 2) {
         $admins = $admins->where('admins.inside_stockist', $authid);
+        
     }
     if ($role_id == 3) {
         $admins = $admins->where('admins.inside_substockist', $authid);
@@ -695,6 +717,19 @@ public function receiveamount(Request $request, $id)
             $admin->save();
         return redirect()->back()->with('message', 'Status updated successfully!');
     }
+    
+    public function getStockistSubordinates($stockist_terminal_id) {
+    // Get substockists based on the stockist terminal ID
+    $substockists = Admin::where('inside_stockist', $stockist_terminal_id)->where('role_id', 3)->get();
+    return response()->json($substockists);
+}
+
+public function getSubstockistUsers($substockist_terminal_id) {
+    // Get users based on the substockist terminal ID
+    $users = Admin::where('inside_substockist', $substockist_terminal_id)->where('role_id', 4)->get();
+    return response()->json($users);
+}
+
    
 
 

@@ -20,7 +20,7 @@ Route::get('/wallet', function () {
     return view('wallet.index');
 })->name('wallet.index');
 
-
+Route::post('/game_setting', [AdminController::class, 'game_setting'])->name('game_setting');
 Route::get('/fetch', [CardfiveController::class, 'fetch_data'])->name('fetch_data');
 Route::post('/admin_prediction', [CardfiveController::class, 'admin_prediction'])->name('admin_prediction');
 Route::get('/',[AdminController::class,'login_page'])->name('login_page');
@@ -83,6 +83,9 @@ Route::get('/userpending/{status}', [AdminController::class, 'userpending'])->na
 Route::put('/admins/{id}/update-status', [AdminController::class, 'updateStatuss'])->name('admins.updateStatus');
 
 
+
+Route::get('/get-stockist-subordinates/{stockist_terminal_id}', [CardfiveController::class, 'getStockistSubordinates']);
+Route::get('/get-substockist-users/{substockist_terminal_id}', [CardfiveController::class, 'getSubstockistUsers']);
 
 
 
