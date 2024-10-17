@@ -56,7 +56,7 @@
                                         <input type="text" name="terminal_id" class="form-control form-control-sm ml-4"
                                             style="width: 173px;" placeholder="Enter Manually Terminal ID"
                                             value="{{ request()->get('terminal_id') }}">
-                                        <button class="btn btn-primary btn-sm" type="submit">Search</button>
+                                        <button class="btn btn-primary btn-sm" ml-2 type="submit">Search</button>
                                     </div>
                                 </form>
                                 <a href="{{ route('stokistlist') }}" class="btn btn-secondary btn-sm ml-3">Reset</a>

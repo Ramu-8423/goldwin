@@ -91,12 +91,14 @@ class CardfiveController extends Controller
     }
     
 public function bethistory(Request $request) {
+ 
     $authid = session('id');
     $authdata = DB::table('admins')->where('id', $authid)->first();
     $authrole = $authdata->role_id;
 
     $strole_id = null;
     $sbrole_id = null;
+    $selected_role_id = null;
     $use_terminal_id = null;
     $stokistid = null;
     $sub_stokistid = null;
@@ -105,11 +107,20 @@ public function bethistory(Request $request) {
         $stokist = DB::table('admins')->where('terminal_id', $request->st_terminal_id)->first();
         $stokistid = $stokist->id;
         $strole_id = 2;
+        $selected_role_id = 2;
     }
 
     if ($request->sub_terminal_id) {
-        $sub_stokistid = $request->sub_terminal_id;
+        
+        $sub_stokistid = $request->sub_terminal_id;  //actually it is id of that terminal id
         $sbrole_id = 3;
+        $selected_role_id = 3;
+    }
+    
+    if($request->use_terminal_id){
+        $user_id = DB::table('admins')->where('terminal_id', $request->use_terminal_id)->value('id');
+        $selected_role_id = 4;
+       
     }
 
     $bet_history = DB::table('bets')
@@ -123,40 +134,41 @@ public function bethistory(Request $request) {
             'admins.day_wallet as admin_day_wallet',
             'admins.inside_stockist as inside_stockist',
             'admins.inside_substockist as inside_substockist',
-            
         );
 
     // Filter based on authrole
     if ($authrole == 2) {
         $bet_history = $bet_history->where('admins.inside_stockist', $authid);
     }
-
-    if ($authrole == 3) {
-        $bet_history = $bet_history->where('admins.inside_substockist', $authid);
-    }
+    
+        if ($authrole == 3) {
+            $bet_history = $bet_history->where('admins.inside_substockist', $authid);
+       }
 
     // Existing filters
-    if ($strole_id == 2) {
-        $bet_history = $bet_history->where('admins.inside_stockist', $stokistid)->where('admins.inside_substockist',null);
-        
-    }
+        if ($selected_role_id == 2) {
+            $bet_history = $bet_history->where('admins.inside_stockist', $stokistid)->where('admins.inside_substockist',null);
+       }elseif($selected_role_id == 3){
+              $bet_history = $bet_history->where('admins.inside_substockist', $sub_stokistid);
+      }elseif($selected_role_id==4){
+           $bet_history = $bet_history->where('admins.id',$user_id);
+      }
+   
+    // if ($stokistid != null && $sub_stokistid != null && $strole_id == 2 && $sbrole_id == 3) {
+    //     dd($stokistid,$sub_stokistid,$strole_id,$sbrole_id);
+    //     $bet_history = $bet_history->where('admins.inside_stockist', 53)
+    //                               ->where('admins.inside_substockist', 54)->get();
+    //                               dd($bet_history);
+    // }
 
-    if ($sbrole_id == 3) {
-        $bet_history = $bet_history->where('admins.inside_substockist', $sub_stokistid);
-        
-    }
 
-    if ($stokistid != null && $sub_stokistid != null && $strole_id == 2 && $sbrole_id == 3) {
-        $bet_history = $bet_history->where('admins.inside_stockist', $stokistid)
-                                   ->where('admins.inside_substockist', $sub_stokistid);
-    }
-
-    if ($request->has('use_terminal_id') && !empty($request->use_terminal_id)) {
-        $bet_history = $bet_history->where('admins.terminal_id', $request->use_terminal_id);
-    }
 
     $perPage = $request->input('perPage', 150);
     $bet_history = $bet_history->orderBy('bets.id', 'desc')->paginate($perPage);
+    
+    
+    
+    
     
     // for the depend dropdown
         $admins = DB::table('admins')
@@ -165,6 +177,7 @@ public function bethistory(Request $request) {
         ->select(
         'admins.terminal_id as terminal_id',
         'admins.role_id as adminrole_id',
+        'admins.id as adminid',
        
         );
     if ($authrole == 2) {
@@ -174,13 +187,17 @@ public function bethistory(Request $request) {
         $admins = $admins->where('admins.inside_substockist', $authid);
     }
   
-    // Terminal ID filtering from the dropdown
     if ($request->has('terminal_id') && !empty($request->terminal_id)) {
         $admins = $admins->where('admins.terminal_id', $request->terminal_id);
     }
     // Fetching the data
     $admins = $admins->orderBy('admins.id', 'desc')->get();
     // for the depend dropdown end
+    
+    
+    
+    
+    
     
     
     // Fetch the list of admins
@@ -211,9 +228,24 @@ public function bethistory(Request $request) {
 }
 
       public function getSubstockistUsers($substockist_terminal_id) {
-      $users = Admin::where('inside_substockist', $substockist_terminal_id)
+           $authid = session('id');
+           $authdata = DB::table('admins')->where('id', $authid)->first();
+           $authrole = $authdata->role_id;
+           
+           if($authrole ==1)
+           {
+               $users = Admin::where('inside_substockist', $substockist_terminal_id)
+                  ->where('role_id', 4)
+                  ->get(); 
+           }
+           elseif($authrole ==2){
+                  $substokists = DB::table('admins')->where('id', $substockist_terminal_id)->first();
+                 $stokistid = $substokists->id;
+                  $users = Admin::where('inside_substockist', $stokistid)
                   ->where('role_id', 4)
                   ->get();
+           }
+     
                   
     return response()->json($users);
 }

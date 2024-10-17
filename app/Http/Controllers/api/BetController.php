@@ -311,7 +311,6 @@ class BetController extends Controller
                     and if $custom_date_time is empty then it will caluclate automatically from bet log table.
                     $custom_date_time  is sending from predictionnpage using js, it is sending input box value, if value is set then value other wise empty you will get
                   */
-                  
                 date_default_timezone_set('Asia/Kolkata');
                 $datetime = date('Y-m-d H:i:s');
                 $currentTime = time();
@@ -319,6 +318,8 @@ class BetController extends Controller
                 $resultAnnouncementTime = date('Y-m-d H:i:00', $periodStart + 300); // this time is for next prediction, appending in input box and after processing by form submission
                     
                 $bet_log = DB::table('bet_logs')->get();
+                $total_purchase_point = DB::table('bet_logs')->sum('amount');
+                 $winning_per = DB::table('game_settings')->where('id',1)->value('winning_per');
                  
                 $custom_date_time = $request->custom_date_time; 
             
@@ -330,12 +331,12 @@ class BetController extends Controller
                         $min_modify_time = date('Y-m-d H:i:s', $unix_modify_time - $adjustment);
                         $max_modify_time = $min_modify_time;
                         $custom_bet = DB::table('bets')->where('result_time','=',$min_modify_time)->get();
-                        
+                        $total_purchase_point = DB::table('bets')->where('result_time','=',$min_modify_time)->sum('total_points');
                     }else{
                         $min_modify_time = date('Y-m-d H:i:s', $unix_modify_time - $adjustment);
                         $max_modify_time = date('Y-m-d H:i:s', $unix_modify_time + (300 - $adjustment));
                         $custom_bet = DB::table('bets')->where('result_time','>',$min_modify_time)->where('result_time','<=',$max_modify_time)->get();
-                        
+                        $total_purchase_point = DB::table('bets')->where('result_time','>',$min_modify_time)->where('result_time','<=',$max_modify_time)->sum('total_points');
                     }
                     $resultAnnouncementTime = $max_modify_time;
             
@@ -351,12 +352,14 @@ class BetController extends Controller
                       $bet_log = [];
                      foreach($a as $value){
                        $bet_log[] = (object)["amount"=>$value];
-                     }   
-                    
-                   return response()->json(['status'=>200,'bet_log'=>$bet_log,'result_time'=>$resultAnnouncementTime]);
+                     }  
+                     
+                      $system_winning = ($total_purchase_point*$winning_per)/100;
+                   return response()->json(['status'=>200,'bet_log'=>$bet_log,'result_time'=>$resultAnnouncementTime,'total_purchase_point'=>$total_purchase_point,'system_winning'=>$system_winning]);
                 }
                 
-               return response()->json(['status'=>200,'bet_log'=>$bet_log,'result_time'=>$resultAnnouncementTime]);
+                $system_winning = ($total_purchase_point*$winning_per)/100;
+               return response()->json(['status'=>200,'bet_log'=>$bet_log,'result_time'=>$resultAnnouncementTime,'total_purchase_point'=>$total_purchase_point,'system_winning'=>$system_winning]);
             }
              
              

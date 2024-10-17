@@ -57,7 +57,7 @@ class PublicController extends Controller
      
      if($data){
          if($game_status==2){
-            return response()->json(['status'=>400,'message'=>'The game is currently paused.','wallet'=>$data->wallet,'game_status'=>2]);
+            return response()->json(['status'=>200,'message'=>'The game is currently paused.','wallet'=>$data->wallet,'game_status'=>2]);
          }else{
              return response()->json(['status'=>200,'message'=>'Admin record found','wallet'=>$data->wallet,'game_status'=>1]);
          }

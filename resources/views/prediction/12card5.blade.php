@@ -97,6 +97,14 @@
                 <div class="card col-md-1 mt-4 " style="height:90px;"><img src="{{env('APP_URL')}}images/12.png"></div>
           </div>
           <div class="row" style="  padding-bottom:20px;" id="amounts-container"></div>
+           <div class="row" style="padding-bottom:20px;" id="winning-container"></div>
+           <div class="row d-flex justify-content-center align-items-center" style="padding-bottom:20px;background-color:white;">
+               <div class="col-md-2" style="border:1px solid blue;color:black;font-weight:400;width:100%;height:40px">Total Purchase Points - </div>
+                <div class="col-md-2" style="border:1px solid blue;color:black;font-weight:400;width:100%;height:40px" id="toatlPurchaseTicket"></div>
+                <div class="col-md-3" style="border:1px solid blue;color:black;font-weight:400;width:100%;height:40px">System max winning points - </div>
+                <div class="col-md-2" style="border:1px solid blue;color:black;font-weight:400;width:100%;height:40px" id="maxSystemWinning"></div>
+                <div class="col-md-3"></div>
+           </div>
                
           <form action="{{route('admin_prediction')}}" method="post">
             @csrf
@@ -111,10 +119,10 @@
                          </div>
                          
                          <div class="col-md-2 form-group d-flex">
-                             <input type="number" name="number" class="form-control" min="1" max="12" placeholder="Result" required>
+                             <input type="number" name="number" class="form-control" min="1" max="12" placeholder="Result" id="result-number" required>
                          </div>
                          <div class="col-md-2 form-group d-flex">
-                            <button type="submit" class="form-control btn btn-info"><b>Submit</b></button>
+                            <button type="submit" class="form-control btn btn-info" id="submit-button"><b>Submit</b></button>
                          </div>
                          <div class="col-md-2 form-group d-flex mt-1">
                             <a href=""> <i class="fa fa-refresh" aria-hidden="true" style="font-size:30px;"></i></a>
@@ -194,7 +202,7 @@
             .then(data => {
                 console.log('Fetched data:', data);
                 if (data && data.bet_log) {
-                    updateBets(data.bet_log,data.result_time); // Update the bets
+                    updateBets(data.bet_log,data.result_time,data.total_purchase_point,data.system_winning); // Update the bets
                 } else {
                     console.error('Data format is incorrect or bet_log is missing:', data);
                 }
@@ -202,23 +210,34 @@
             .catch(error => console.error('Error fetching data:', error));
        }
 
-    function updateBets(bet_log,result_time) {
+    function updateBets(bet_log,result_time,total_purchase_point,system_winning) {
         console.log('Updating Bets:', bet_log);
         var amountdetailHTML = '';
+        var winningdetailHTML = '';
         // var result_time = '<h1>Result Time - '+ result_time + '</h1>';
        
        bet_log.forEach((item, index) => {
-                amountdetailHTML += '<div class="card col-md-1 mt-4" style="background-color:#fff;">';
+                amountdetailHTML += '<div class="card col-md-1 mt-4" style="background-color:#fff;color:black;font-weight:400;">';
                 amountdetailHTML += '<div class="card-body" onclick="point_details(' + (index + 1) + ')">';
                 amountdetailHTML += '<b style="color:black">' + item.amount + '</b>';
                 amountdetailHTML += '</div>';
                 amountdetailHTML += '</div>';
+                
+                winningdetailHTML += '<div class="card col-md-1 mt-4" style="background-color:#fff;color:black;font-weight:400;">';
+                winningdetailHTML += '<div class="card-body" onclick="point_details(' + (index + 1) + ')">';
+                winningdetailHTML += '<b style="color:black">' + (item.amount/5)*50 + '</b>';
+                winningdetailHTML += '</div>';
+                winningdetailHTML += '</div>';
+                
             });
 
 
         $('#amounts-container').html(amountdetailHTML);
+        $('#winning-container').html(winningdetailHTML);
         $('#result_time').val(result_time);
-         document.getElementById('result_announce_time').textContent = result_time;
+        document.getElementById('result_announce_time').textContent = result_time;
+        document.getElementById('toatlPurchaseTicket').textContent = total_purchase_point;
+        document.getElementById('maxSystemWinning').textContent = system_winning;
     }
 
     function refreshData() {
@@ -312,6 +331,22 @@ function updatePointsDetailsError() {
 </script>
 <script type="text/javascript">    
    // setInterval(page_refresh, 300000); // Refresh page every 1 minute
+       function toggleFields() {
+        const resultType = document.getElementById('result-type').value;
+        const resultNumber = document.getElementById('result-number');
+        const submitButton = document.getElementById('submit-button');
+        
+        if (resultType == '1') {
+            // Enable number input and submit button
+            resultNumber.disabled = false;
+            submitButton.disabled = false;
+        } else {
+            resultNumber.disabled = true;
+            submitButton.disabled = true;
+        }
+    }
+    // Call the function on page load to ensure correct state based on pre-selected value
+    window.onload = toggleFields;
 </script>
 
 

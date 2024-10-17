@@ -92,14 +92,19 @@ class CroneController extends Controller
                 $sum_total_amount  = $amountStats->total_amount;
                 $max_winning_amount = ($sum_total_amount*$winning_percentage)/100;
                 $randomRow = DB::table('bet_logs')
-                            ->inRandomOrder()
-                            ->where('amount','<=',$max_winning_amount)
-                            ->where('amount','!=',0)
-                            ->first();
+                                ->inRandomOrder()
+                                ->where('amount', '!=', 0)
+                                ->whereRaw('(amount / 5) * 50 <= ?', [$max_winning_amount])
+                                ->first();
+
                    if(!$randomRow){
                         $randomRow = DB::table('bet_logs')->inRandomOrder()->where('amount',0)->first();
                          if(!$randomRow){
-                             $randomRow = DB::table('bet_logs')->where('amount','>=',$max_winning_amount)->orderBy('amount','ASC')->first();
+                             $randomRow = DB::table('bet_logs')
+                                                ->whereRaw('(amount / 5) * 50 >= ?', [$max_winning_amount])
+                                                ->orderBy('amount', 'ASC')
+                                                ->first();
+
                          }
                    }
                  $card_number = $randomRow->id;
