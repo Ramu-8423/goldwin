@@ -14,9 +14,7 @@ use Illuminate\Support\Str;
 
 class CardfiveController extends Controller
 {
-    
-     public function delete_prediction(Request $request){
-         
+          public function delete_prediction(Request $request){
           $modify_date_time = date('Y-m-d H:i:s', strtotime($request->result_time)); // because it is coming like this - 2024-10-10T12:12 due to input box datetime-local formate
           $unix_modify_time = strtotime($modify_date_time);
           $adjustment = $unix_modify_time % 300;
@@ -60,8 +58,6 @@ class CardfiveController extends Controller
           }
           
     }
-    
-    
     public function result_history(Request $request){
             $perPage = 10;
         if ($request->isMethod('post')) {
@@ -89,20 +85,16 @@ class CardfiveController extends Controller
        
         return view('admin.resulthistory')->with('results',$result_history);
     }
-    
 public function bethistory(Request $request) {
- 
     $authid = session('id');
     $authdata = DB::table('admins')->where('id', $authid)->first();
     $authrole = $authdata->role_id;
-
     $strole_id = null;
     $sbrole_id = null;
     $selected_role_id = null;
     $use_terminal_id = null;
     $stokistid = null;
     $sub_stokistid = null;
-
     if ($request->st_terminal_id) {
         $stokist = DB::table('admins')->where('terminal_id', $request->st_terminal_id)->first();
         $stokistid = $stokist->id;
@@ -161,14 +153,8 @@ public function bethistory(Request $request) {
     //                               dd($bet_history);
     // }
 
-
-
     $perPage = $request->input('perPage', 150);
     $bet_history = $bet_history->orderBy('bets.id', 'desc')->paginate($perPage);
-    
-    
-    
-    
     
     // for the depend dropdown
         $admins = DB::table('admins')

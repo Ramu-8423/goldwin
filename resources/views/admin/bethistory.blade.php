@@ -5,7 +5,6 @@
     <div class="white_shd full margin_bottom_30">
         <div class="full graph_head">
             <div class="heading1 margin_0">
-                
    @if($authrole != 3)
    <div class="row"> 
     <form action="{{ route('admin.bethistory') }}" method="GET" class="d-flex align-items-center ml-auto">
@@ -24,8 +23,6 @@
 </div>
 
 @endif
-
-
                 @if($authrole == 1)
                 <form action="{{ route('admin.bethistory') }}" method="GET">
                     <div class="row d-flex">
