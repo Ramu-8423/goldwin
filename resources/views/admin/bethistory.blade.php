@@ -5,29 +5,44 @@
     <div class="white_shd full margin_bottom_30">
         <div class="full graph_head">
             <div class="heading1 margin_0">
-   @if($authrole != 3)
-   <div class="row"> 
-    <form action="{{ route('admin.bethistory') }}" method="GET" class="d-flex align-items-center ml-auto">
-        <select name="use_terminal_id" id="uniqueTerminalSelect" class="form-control custom-select-terminal" style="width: 160px; margin-top: 5px;"> <!-- Added margin-top -->
-            <option value="">Select Terminal</option>
-            @php
-                $uniqueTerminals = $results->pluck('admin_terminal_id')->unique();
-            @endphp
-            @foreach($uniqueTerminals as $terminal)
-                <option value="{{ $terminal }}">{{ $terminal }}</option>
-            @endforeach
-        </select>
-        
-        <button id="uniqueSubmitButton" class="btn btn-primary btn-sm ml-2 custom-button" style="margin-top: -5px;">Button</button> <!-- Keep button unchanged -->
-    </form>
-</div>
-
-@endif
+                @if($authrole != 3)
+                <div class="row">
+                    <form action="{{ route('admin.bethistory') }}" method="GET"
+                        class="d-flex align-items-center ml-auto">
+                        <select name="use_terminal_id" id="uniqueTerminalSelect"
+                            class="form-control custom-select-terminal" style="width: 160px; margin-top: 5px;">
+                            <!-- Added margin-top -->
+                            <option value="">Select Terminal</option>
+                            @php
+                            $uniqueTerminals = $results->pluck('admin_terminal_id')->unique();
+                            @endphp
+                            @foreach($uniqueTerminals as $terminal)
+                            <option value="{{ $terminal }}">{{ $terminal }}</option>
+                            @endforeach
+                        </select>
+                        <button id="uniqueSubmitButton" class="btn btn-primary btn-sm ml-2 custom-button"
+                            style="margin-top: -5px;">Button</button> <!-- Keep button unchanged -->
+                    </form>
+                </div>
+                @endif
+                
                 @if($authrole == 1)
                 <form action="{{ route('admin.bethistory') }}" method="GET">
                     <div class="row d-flex">
+                        <div class="col-sm-2 text-center ml-1">
+                            <span class="me-2">All Status</span>
+                            <select name="bet_status" id="status" class="form-control form-control-sm  ml-2">
+                            <option value="">All History</option>
+                            <option value="0">Pending</option>
+                            <option value="1">Cancel</option>
+                            <option value="2">Loss</option>
+                            <option value="3">Unclaimed</option>
+                            <option value="4">Claimed</option>
+                        </select>
+                            </select>
+                        </div>
                         <!-- Stokist Section -->
-                        <div class="col-sm-3 text-center ml-2">
+                        <div class="col-sm-3 text-center ml-1">
                             <span class="me-2">Stokist</span>
                             <select id="stockist-select" name="st_terminal_id" class="form-control select2 me-2"
                                 style="width: auto;">
@@ -41,7 +56,6 @@
                                 @endforeach
                             </select>
                         </div>
-
                         <!-- Substockist Section -->
                         <div class="col-sm-3 text-center ml-1">
                             <span class="me-2">Sustokist</span>
@@ -51,7 +65,6 @@
                                 <!-- Populate substockist options as needed -->
                             </select>
                         </div>
-
                         <!-- User Section -->
                         <div class="col-sm-2 text-center ml-1">
                             <span class="me-2">User</span>
@@ -87,7 +100,6 @@
                             @endforeach
                         </select>
                     </div>
-
                     <!-- User Section -->
                     <div class="col-sm-3 text-center ml-5">
                         <span class="me-2">User</span>
@@ -108,13 +120,11 @@
             </form>
             @elseif($authrole == 3)
             <form action="{{ route('admin.bethistory') }}" method="GET">
-                <div class="row d-flex">
-                    <!-- User Section -->
-                    <div class="col-sm-3 text-center ml-5">
-                        <span class="me-2">User</span>
-                        <select id="user-select" name="use_terminal_id" class="form-control select2 me-2"
-                            style="width: auto;">
-                            <option value="">All user</option>
+                <div class="d-flex align-items-center">
+                    <!-- User Dropdown -->
+                    <div class="mr-3 d-flex align-items-center mt-2">
+                        <select id="user-select" name="use_terminal_id" class="form-control select2"
+                            style="width: 150px;">
                             @foreach($results as $admin)
                             @if($admin->admin_role_id == 4)
                             <option value="{{ $admin->admin_terminal_id }}">{{ $admin->admin_terminal_id }}</option>
@@ -122,21 +132,17 @@
                             @endforeach
                         </select>
                     </div>
-
-                    <div class="col-sm-1">
-                        <div class="d-flex">
-                            <button type="submit" class="btn btn-primary ml-5 btn-sm mt-4 ">Search</button>
-                            <a href="{{route('admin.bethistory')}}"><button
-                                    class="btn btn-secondary  btn-sm mt-4  ml-1">Reset</button>
-                        </div></a>
+                    <!-- Buttons -->
+                    <div class="d-flex">
+                        <button type="submit" class="btn btn-primary btn-sm mr-2">Search</button>
+                        <a href="" class="btn btn-secondary btn-sm">Reset</a>
                     </div>
                 </div>
             </form>
             @endif
-            
+
         </div>
     </div>
-     
     <div class="table_section padding_infor_info">
         <div class="table-responsive">
             <table id="example" class="table table-hover" style="white-space: nowrap;">
@@ -356,12 +362,12 @@ $(document).ready(function() {
 });
 </script>
 <script>
-    $(document).ready(function() {
-        $('#uniqueTerminalSelect').select2({
-            placeholder: "Select Terminal",
-            allowClear: true
-        });
+$(document).ready(function() {
+    $('#uniqueTerminalSelect').select2({
+        placeholder: "Select Terminal",
+        allowClear: true
     });
+});
 </script>
 
 @endsection

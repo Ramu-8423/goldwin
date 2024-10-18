@@ -60,6 +60,7 @@ class BetController extends Controller
             $formattedTime = str_replace(":", "", $time);
             $result_announce_time = $newdate.' '.$time;
           
+          
             //2024-07-06 12:59:04
            // dd($result_announce_time,$datetime);
            
@@ -85,7 +86,9 @@ class BetController extends Controller
            $order_id = $this->generateBarCodeNumber('order_id');
 
 
-            $wallet = DB::table('admins')->where('id',$user_id)->value('wallet');
+            $user_details = DB::table('admins')->where('id',$user_id)->first();
+            $wallet = $user_details->wallet;
+            $terminal_id = $user_details->terminal_id;
             
             if($wallet<$total_points){
                 return response()->json(['status'=>400,'message'=>'Insufficient funds!']);
@@ -117,7 +120,7 @@ class BetController extends Controller
                     'game_name' => $game_name,
                     'bet_details' => $bet_details,
                     'created_at' => $datetime,
-                    'treminal_id' => 7711010603,
+                    'treminal_id' => $terminal_id,
                     'barcode_number' => $barcode_number,
                     'bet_log_status'=>$status,
                     'order_id' => $order_id

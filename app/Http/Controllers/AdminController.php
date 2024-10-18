@@ -16,6 +16,42 @@ class AdminController extends Controller
 {
     
     
+    public function dashboard(Request $request){
+        date_default_timezone_set('Asia/Kolkata');
+        $datetime = date('Y-m-d H:i:s');
+        $newdate = date('Y-m-d');
+        
+        $login_id = session('id');
+        $login_role_id = session('role_id');
+        $login_terminal_id = session('terminal_id');
+    
+          $from = $request->from;
+          $to = $request->to;
+       
+        $query = DB::table('bets')
+                    ->select(
+                        DB::raw('COALESCE(SUM(total_points), 0) as total_points'),
+                        DB::raw('COALESCE(SUM(CASE WHEN status = 1 THEN total_points ELSE 0 END), 0) as cancel_points'),
+                        DB::raw('COALESCE(SUM(CASE WHEN status = 4 THEN win_points ELSE 0 END), 0) as claimed_points'),
+                        DB::raw('COALESCE(SUM(CASE WHEN status = 2 THEN total_points ELSE 0 END), 0) as loss_points'),
+                        DB::raw('COALESCE(SUM(CASE WHEN status = 3 THEN win_points ELSE 0 END), 0) as unclaimed_points'),
+                        DB::raw('COALESCE(SUM(CASE WHEN status = 0 THEN total_points ELSE 0 END), 0) as pending_points'),
+                    );
+                    
+            if($from){
+                $query->whereDate('result_time', '>=', $from);
+            }   
+            if($to){
+                 $query->whereDate('result_time', '<=', $to);
+            }
+            if(!$from && !$to){
+                $query->whereDate('result_time', '=', $newdate);
+            }
+        $dashboard_data = $query->get();
+           return view('admin.index')->with('dashboard_data',$dashboard_data);
+    }
+    
+    
       public function game_setting(Request $req){
         $site_message = $req->site_message;
         $percentage = $req->percentage;
@@ -163,7 +199,7 @@ class AdminController extends Controller
            $request->session()->put('role_id', $login->role_id); 
            $request->session()->put('status', $login->status); 
            $status = Session::get('status');
-           if($status == 0)
+           if($status != 1)
            {
              return redirect()->route('login_page')->with('error','Inactive account. Please reach out to admin');
            }
@@ -175,9 +211,7 @@ class AdminController extends Controller
             return redirect()->route('login_page')->with('error','Invalid Credentials');
         }
     }
-        public function dashboard(){
-        return view('admin.index');
-    }
+
      public function logout(Request $request){
          $request->session()->forget('id');
         return redirect()->route('login_page');

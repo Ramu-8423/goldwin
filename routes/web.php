@@ -25,7 +25,7 @@ Route::get('/fetch', [CardfiveController::class, 'fetch_data'])->name('fetch_dat
 Route::post('/admin_prediction', [CardfiveController::class, 'admin_prediction'])->name('admin_prediction');
 Route::get('/',[AdminController::class,'login_page'])->name('login_page');
 Route::post('/login',[AdminController::class,'login'])->name('auth.login');
-Route::get('/dashboard',[AdminController::class,'dashboard'])->name('admin.dashboard');
+Route::any('/dashboard',[AdminController::class,'dashboard'])->name('admin.dashboard');
 Route::any('/result_history',[CardfiveController::class, 'result_history'])->name('result_history');
 Route::get('/logout',[AdminController::class,'logout'])->name('logout');
 Route::get('/12card5',[AdminController::class,'cardfive'])->name('prediction.12card5');
@@ -86,6 +86,11 @@ Route::put('/admins/{id}/update-status', [AdminController::class, 'updateStatuss
 
 Route::get('/get-stockist-subordinates/{stockist_terminal_id}', [CardfiveController::class, 'getStockistSubordinates']);
 Route::get('/get-substockist-users/{substockist_terminal_id}', [CardfiveController::class, 'getSubstockistUsers']);
+
+
+Route::any('/calculation', [CardfiveController::class, 'calculation'])->name('admin.calculation');
+
+
 
 
 

@@ -1,5 +1,6 @@
  @extends('admin.body.adminmaster')
  @section('content')
+ 
  <div class="midde_cont">
                   <div class="container-fluid">
                      <div class="row column_title">
@@ -20,37 +21,7 @@
                               </div>
                               <div class="counter_no">
                                  <div>
-                                    <p class="total_no">2500</p>
-                                    <p class="head_couter">Current Wallet</p>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30">
-                              <div class="couter_icon">
-                                 <div> 
-                                    <i class="fa fa-rupee blue1_color"></i>
-                                 </div>
-                              </div>
-                              <div class="counter_no">
-                                 <div>
-                                    <p class="total_no">123.50</p>
-                                    <p class="head_couter">Day Wallet</p>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30">
-                              <div class="couter_icon">
-                                 <div> 
-                                    <i class="fa fa-rupee green_color"></i>
-                                 </div>
-                              </div>
-                              <div class="counter_no">
-                                 <div>
-                                    <p class="total_no">1,805</p>
+                                    <p class="total_no">{{$dashboard_data[0]->total_points}}</p>
                                     <p class="head_couter">Total Bet Points</p>
                                  </div>
                               </div>
@@ -65,86 +36,7 @@
                               </div>
                               <div class="counter_no">
                                  <div>
-                                    <p class="total_no">54</p>
-                                    <p class="head_couter">Today Bet Points</p>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="row column1">
-                        <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30">
-                              <div class="couter_icon">
-                                 <div> 
-                                    <i class="fa fa-rupee green_color"></i>
-                                 </div>
-                              </div>
-                              <div class="counter_no">
-                                 <div>
-                                    <p class="total_no">2500</p>
-                                    <p class="head_couter">Total Claimed Points</p>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30">
-                              <div class="couter_icon">
-                                 <div> 
-                                    <i class="fa fa-rupee green_color"></i>
-                                 </div>
-                              </div>
-                              <div class="counter_no">
-                                 <div>
-                                    <p class="total_no">123.50</p>
-                                    <p class="head_couter">Today Claimed Points</p>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30">
-                              <div class="couter_icon">
-                                 <div> 
-                                    <i class="fa fa-rupee red_color"></i>
-                                 </div>
-                              </div>
-                              <div class="counter_no">
-                                 <div>
-                                    <p class="total_no">1,805</p>
-                                    <p class="head_couter">Total Loss Points</p>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30">
-                              <div class="couter_icon">
-                                 <div> 
-                                    <i class="fa fa-rupee red_color"></i>
-                                 </div>
-                              </div>
-                              <div class="counter_no">
-                                 <div>
-                                    <p class="total_no">54</p>
-                                    <p class="head_couter">Today Loss Points</p>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="row column1">
-                        <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30">
-                              <div class="couter_icon">
-                                 <div> 
-                                    <i class="fa fa-rupee yellow_color"></i>
-                                 </div>
-                              </div>
-                              <div class="counter_no">
-                                 <div>
-                                    <p class="total_no">2500</p>
+                                    <p class="total_no">{{$dashboard_data[0]->cancel_points}}</p>
                                     <p class="head_couter">Total Cancel Points</p>
                                  </div>
                               </div>
@@ -154,13 +46,13 @@
                            <div class="full counter_section margin_bottom_30">
                               <div class="couter_icon">
                                  <div> 
-                                    <i class="fa fa-rupee yellow_color"></i>
+                                    <i class="fa fa-rupee green_color"></i>
                                  </div>
                               </div>
                               <div class="counter_no">
                                  <div>
-                                    <p class="total_no">123.50</p>
-                                    <p class="head_couter">Today Cancel Points</p>
+                                    <p class="total_no">{{$dashboard_data[0]->claimed_points}}</p>
+                                    <p class="head_couter">Total Claimed Points</p>
                                  </div>
                               </div>
                            </div>
@@ -169,33 +61,53 @@
                            <div class="full counter_section margin_bottom_30">
                               <div class="couter_icon">
                                  <div> 
-                                    <i class="fa fa-rupee yellow_color"></i>
+                                    <i class="fa fa-rupee blue1_color"></i>
                                  </div>
                               </div>
                               <div class="counter_no">
                                  <div>
-                                    <p class="total_no">1,805</p>
-                                    <p class="head_couter">Total Unclaimed Points</p>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30">
-                              <div class="couter_icon">
-                                 <div> 
-                                    <i class="fa fa-rupee yellow_color"></i>
-                                 </div>
-                              </div>
-                              <div class="counter_no">
-                                 <div>
-                                    <p class="total_no">54</p>
-                                    <p class="head_couter">Today Unclaimed Points</p>
+                                    <p class="total_no">{{$dashboard_data[0]->unclaimed_points
+                                    }}
+                                    </p>
+                                    <p class="head_couter">Total Unclaimed points</p>
                                  </div>
                               </div>
                            </div>
                         </div>
                      </div>
+                     <div class="row column1">
+                        <div class="col-md-6 col-lg-3">
+                           <div class="full counter_section margin_bottom_30">
+                              <div class="couter_icon">
+                                 <div> 
+                                    <i class="fa fa-rupee green_color"></i>
+                                 </div>
+                              </div>
+                              <div class="counter_no">
+                                 <div>
+                                    <p class="total_no">{{$dashboard_data[0]->loss_points}}</p>
+                                    <p class="head_couter">Total Loss Points</p>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                         <div class="col-md-6 col-lg-3">
+                           <div class="full counter_section margin_bottom_30">
+                              <div class="couter_icon">
+                                 <div> 
+                                    <i class="fa fa-rupee green_color"></i>
+                                 </div>
+                              </div>
+                              <div class="counter_no">
+                                 <div>
+                                    <p class="total_no">{{$dashboard_data[0]->pending_points}}</p>
+                                    <p class="head_couter">Total Pending Points</p>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                    
                   </div>
                   
                  

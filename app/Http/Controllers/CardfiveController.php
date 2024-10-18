@@ -86,6 +86,7 @@ class CardfiveController extends Controller
         return view('admin.resulthistory')->with('results',$result_history);
     }
 public function bethistory(Request $request) {
+    //dd($request->all());
     $authid = session('id');
     $authdata = DB::table('admins')->where('id', $authid)->first();
     $authrole = $authdata->role_id;
@@ -146,12 +147,10 @@ public function bethistory(Request $request) {
            $bet_history = $bet_history->where('admins.id',$user_id);
       }
    
-    // if ($stokistid != null && $sub_stokistid != null && $strole_id == 2 && $sbrole_id == 3) {
-    //     dd($stokistid,$sub_stokistid,$strole_id,$sbrole_id);
-    //     $bet_history = $bet_history->where('admins.inside_stockist', 53)
-    //                               ->where('admins.inside_substockist', 54)->get();
-    //                               dd($bet_history);
-    // }
+     $bet_status = $request->bet_status??null;
+     if ($bet_status) {
+     $bet_history = $bet_history->where('bets.status', $request->bet_status);
+      }
 
     $perPage = $request->input('perPage', 150);
     $bet_history = $bet_history->orderBy('bets.id', 'desc')->paginate($perPage);
@@ -176,34 +175,23 @@ public function bethistory(Request $request) {
     if ($request->has('terminal_id') && !empty($request->terminal_id)) {
         $admins = $admins->where('admins.terminal_id', $request->terminal_id);
     }
+    
     // Fetching the data
     $admins = $admins->orderBy('admins.id', 'desc')->get();
     // for the depend dropdown end
-    
-    
-    
-    
-    
-    
-    
     // Fetch the list of admins
     $users = $admins;
-   
-    
     return view('admin.bethistory')->with([
         'results' => $bet_history,
         'users' => $users,
         'authrole' => $authrole
     ]);
 }
-
       public function reset_bethistory(Request $request){
           	$request->session()->forget('result_time');
     		$request->session()->forget('barcode_number');
     		return redirect()->back();
       }
-      
-      
     public function getStockistSubordinates($stockist_terminal_id) {
     $stokist = DB::table('admins')->where('terminal_id', $stockist_terminal_id)->first();
     $stokistid = $stokist->id;
@@ -212,12 +200,10 @@ public function bethistory(Request $request) {
                          ->get();
     return response()->json($substockists);
 }
-
       public function getSubstockistUsers($substockist_terminal_id) {
            $authid = session('id');
            $authdata = DB::table('admins')->where('id', $authid)->first();
            $authrole = $authdata->role_id;
-           
            if($authrole ==1)
            {
                $users = Admin::where('inside_substockist', $substockist_terminal_id)
@@ -231,10 +217,123 @@ public function bethistory(Request $request) {
                   ->where('role_id', 4)
                   ->get();
            }
-     
-                  
     return response()->json($users);
 }
 
-      
+public function calculation(Request  $request){
+    //Dependent dropdowns banane ke liye  
+    $authid = session('id');
+    $authdata = DB::table('admins')->where('id', $authid)->first();
+    $authrole = $authdata->role_id;
+       $admins = DB::table('admins')
+       ->leftjoin('admins as admin_stockist','admins.inside_stockist','=','admin_stockist.id')
+       ->leftjoin('admins as admin_substockist','admins.inside_substockist','=','admin_substockist.id')
+       ->select(
+       'admins.terminal_id as terminal_id',
+       'admins.role_id as adminrole_id',
+       'admins.id as adminid',
+        );
+    if ($authrole == 2) {
+        $admins = $admins->where('admins.inside_stockist', $authid);
+    }
+    if ($authrole == 3) {
+        $admins = $admins->where('admins.inside_substockist', $authid);
+    }
+    $admins = $admins->orderBy('admins.id', 'desc')->get();
+    //Dependent dropdowns end code 
+                    //For request data who submited by blade tamplet end code 
+                     $inside_stockist = null;
+                     $inside_substockist = null;
+                     $user_id = null;
+                     $all_user_search_id = null;
+                     $selected_role_id = null;
+                         if ($request->st_terminal_id) {
+                             $inside_stockist = DB::table('admins')->where('terminal_id', $request->st_terminal_id)->value('id');
+                         }
+                         if ($request->sub_terminal_id) {
+                             $inside_substockist = $request->sub_terminal_id;  //actually it is id of that terminal id
+                         }
+                         if($request->use_terminal_id){
+                             $user_id = DB::table('admins')->where('terminal_id', $request->use_terminal_id)->value('id');
+                         }
+                          if($request->all_user_search_id){
+                             $all_user_search_id = DB::table('admins')->where('terminal_id', $request->all_user_search_id)->value('id');
+                         }
+                       // dd($inside_stockist,$inside_substockist,$user_id,$all_user_search_id);
+                        //For request data  asingned  end code 
+// Get status from the request, if availabl
+
+// Start building the query
+$query = DB::table('bets')
+    ->leftJoin('admins', 'bets.user_id', '=', 'admins.id')
+    ->select(
+        'admins.id as admin_id',
+        'admins.role_id as admin_role_id',
+        'admins.terminal_id as admin_terminal_id',
+        'admins.status as admin_status',
+        'admins.wallet as admin_wallet',
+        'admins.day_wallet as admin_day_wallet',
+        'admins.inside_stockist as inside_stockist',
+        'admins.inside_substockist as inside_substockist',
+        DB::raw("
+            SUM(CASE
+                WHEN bets.status = 0 THEN bets.total_points
+                ELSE 0
+            END) as total_pending_points,
+            SUM(CASE
+                WHEN bets.status = 1 THEN bets.total_points
+                ELSE 0
+            END) as total_cancelled_points,
+            SUM(CASE
+                WHEN bets.status = 2 THEN bets.total_points
+                ELSE 0
+            END) as total_loss_points,
+            SUM(CASE
+                WHEN bets.status = 3 THEN bets.total_points
+                ELSE 0
+            END) as total_unclaimed_points,
+            SUM(CASE
+                WHEN bets.status = 4 THEN bets.total_points
+                ELSE 0
+            END) as total_claimed_points,
+            SUM(CASE
+                WHEN bets.status = 0 THEN bets.win_points
+                ELSE 0
+            END) as total_pending_win_points,
+            SUM(CASE
+                WHEN bets.status = 1 THEN bets.win_points
+                ELSE 0
+            END) as total_cancelled_win_points,
+            SUM(CASE
+                WHEN bets.status = 2 THEN bets.win_points
+                ELSE 0
+            END) as total_loss_win_points,
+            SUM(CASE
+                WHEN bets.status = 3 THEN bets.win_points
+                ELSE 0
+            END) as total_unclaimed_win_points,
+            SUM(CASE
+                WHEN bets.status = 4 THEN bets.win_points
+                ELSE 0
+            END) as total_claimed_win_points
+        ")
+    );
+   
+ 
+
+$results = $query->get(); // Execute the query
+
+// Output results
+dd($results);
+
+
+        
+        return view('admin.calculation')->with([
+            'authrole' => $authrole,
+            'users' => $admins
+        ]);
+        
+        
+}
+
 }

@@ -43,6 +43,9 @@ class ResultController extends Controller
 
             /*
                 status - 1 - cancelled
+                
+                          2- loss,
+                          
                          3 - unclaimed
                          4 - claimed
                          5 - current (all type bet record of current date for a particular game type)
@@ -60,18 +63,20 @@ class ResultController extends Controller
             $status_array = [];
             if ($status == 1 || $status == 3 || $status == 4) {
                 $status_array[] = $status;
-            } else if ($status == 5) {
+            } elseif($status == 5) {
                 $status_array = [0, 1, 2, 3, 4];
-            } else if ($status == 6) {
+            } elseif($status == 6) {
                 $status_array = [0, 1, 2, 3, 4]; // or any other statuses you want to include
-            } else {
+            }elseif($status==2){
+                $status_array[] = $status;
+            }else{
                 return response()->json([
                     'status' => 400,
                     'message' => 'Invalid status value',
                     'data'=>[]
                 ]);
             }
-          
+            
           $bet_history = DB::table('bets')->select('id','result_time','game_name','barcode_number','total_points','status')->where('user_id',$user_id)->whereDate('created_at', $date)->whereIn('status', $status_array)->orderByDesc('id')->get();
             
             

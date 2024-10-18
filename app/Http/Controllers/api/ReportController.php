@@ -25,18 +25,18 @@ class ReportController extends Controller
             $validator = Validator::make($request->all(), [
               'from' => ['required', 'date_format:Y-m-d'],
               'to' =>['required', 'date_format:Y-m-d'],
-              //'user_id'=>'required|exists:bets,user_id'
+              'user_id'=>'required|exists:admins,id'
             ]);
         
             $validator->stopOnFirstFailure();
         
             if($validator->fails()){
-                return response()->json(['status' => 400, 'message' => $validator->errors()->first()]);
+                return response()->json(['status' => 200, 'message' => $validator->errors()->first()]);
             }
 
             $from = $request->from;
             $to = $request->to;
-            $user_id =  1;// $request->user_id;
+            $user_id =  $request->user_id;// $request->user_id;
             //$report_data = DB::table('bets')->whereDate('created_at','>=',$from)->whereDate('created_at','<=',$to)->get();
             
             $report_data = DB::table('bets')
@@ -50,7 +50,7 @@ class ReportController extends Controller
                     ->where('user_id',$user_id)
                     ->first();
 
-                
+                if($report_data){
                  $play_points = $report_data->total_points;
                  $cancel_points = $report_data->cancel_points;
                  $claimed_points = $report_data->claimed_points;
@@ -63,20 +63,36 @@ class ReportController extends Controller
                  $bonus_points = 0;
                  $gift_points = 0;
                  $net_pay_points = $gross_points;
+                }else{
+                    $play_points = 0;
+                    $cancel_points = 0;
+                    $claimed_points = 0;
+                    $net_play_points = 0;
+                    $opt_play_points =0;
+                    $discounted_points = 0;
+                    $gross_points = 0;
+                    $bonus_points = 0;
+                    $gift_points =  0;
+                    $net_pay_points=0;
+                }
                
-               $current_report = DB::table('admins')->where('id',1)->first();
+               $current_report = DB::table('admins')->where('id',$user_id)->first();
                
-               if(!$current_report){
+               if($current_report){
                    $open_points = 0;
                    $current_points = 0;
+                   $add_points = 0;
+               }else{
+                   $open_points = $current_report->day_wallet;
+                   $current_points = $current_report->wallet;
+                   $add_points =$current_report->today_add_money;
+                   
+                   
+                   
                }
                
-                 $open_points = $current_report->day_wallet;
-                 $current_points = $current_report->wallet;
-                 
-                  $add_points =0;
                   $total_points = $open_points + $add_points;
-                   $used_points = $current_points - $open_points;
+                  $used_points = $current_points - $open_points;
                   
                 
              
@@ -99,8 +115,7 @@ class ReportController extends Controller
                 'used_points'=>$used_points,
                 'current_points'=>$current_points
                 ];
-          
-        
+         
             
             if($report_data){
             return response()->json(['status'=>200,'message'=>'Record found.','report'=>$report]);

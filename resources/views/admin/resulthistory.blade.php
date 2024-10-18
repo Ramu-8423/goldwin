@@ -79,7 +79,7 @@
                                         $card_name = $card_info[$number];
                                     }
                                   @endphp
-                                {{$card_name}}
+                                {{$card_name??'N/A'}}
                                 
                             </td>
                             <td>{{$item->XB}}</td>
