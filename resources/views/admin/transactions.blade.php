@@ -21,11 +21,10 @@
                         <table class="table">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th>Transaction ID</th>
-                                    <th>UserID</th>
-                                    <th>Role</th>
-                                    <th>KEY NAME</th>
+                                    <th>No.</th>
+                                    <th>Pin</th>
                                     <th>Amount</th>
+                                    <th>Transaction By</th>
                                     <th>Description</th>
                                     <th>CREATED DATE</th>
                                 </tr>
@@ -33,21 +32,20 @@
                             <tbody class="tdata">
                                 @forelse($transactions as $admin)
                                 <tr>
-                                    <td>{{ $admin->transaction_id }}</td>
-                                    <td>{{ $admin->admin_id }}</td>
-                                    <td>
-                                         @if($admin->role == 1)
-                                              <b class="text-primary">Admin</b>
-                                          @elseif($admin->role == 2)
-                                              <b class="text-primary">Stockist</b>
-                                          @elseif($admin->role == 3)
-                                              <b class="text-primary">Substockist</b>
-                                          @elseif($admin->role == 4)
-                                              <b class="text-primary">User</b>
-                                          @endif
-                                    </td>
+                                   <td>{{ $loop->iteration }}</td>
                                     <td>{{ $admin->terminal_id }}</td>
                                     <td>{{ $admin->transamount }}</td>
+                                    <td>
+    @if($admin->transaction_perform_by == 1)
+        Admin
+    @elseif($admin->transaction_perform_by == 2)
+        Stockist
+    @elseif($admin->transaction_perform_by == 3)
+        Substockist
+    @else
+        Unknown Role
+    @endif
+</td>
                                     <td>
                                         @if($admin->description == 1)
                                          <p>Add</p>
@@ -92,30 +90,18 @@
                         <table class="table">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th>Paymentricive ID</th>
-                                    <th>User ID</th>
-                                    <th>Role</th>
+                                    <th>No.</th>
+                                     <th>Pin</th>
                                     <th>Amount</th>
-                                    <th>Description</th>
+                                    <th>Receiver</th>
                                     <th>DATE</th>
                                 </tr>
                             </thead>
                             <tbody class="tdata">
                                 @forelse($paymentricive as $admins)
                                 <tr>
-                                    <td>{{ $admins->id }}</td>
-                                    <td>{{ $admins->user_id }}</td> 
-<td>
-                                         @if($admins->role_id == 1)
-                                              <b class="text-primary">Admin</b>
-                                          @elseif($admins->role_id == 2)
-                                              <b class="text-primary">Stockist</b>
-                                          @elseif($admins->role_id == 3)
-                                              <b class="text-primary">Substockist</b>
-                                          @elseif($admins->role_id == 4)
-                                              <b class="text-primary">User</b>
-                                          @endif
-                                    </td>
+                                  <td>{{ $loop->iteration }}</td>
+                                  <td>{{ $admins->terminal_id }}</td>
                                     <td>{{ $admins->receiveamount }}</td> 
                                     <td>
                                         @if ($admins->addedby == 1)

@@ -42,7 +42,8 @@
                         <!-- Buttons Section -->
                         <div class="col-sm-3 d-flex align-items-center justify-content-center mb-3">
                             <button type="submit" class="btn btn-primary btn-sm mr-2">Search</button>
-                            <a href="" class="btn btn-secondary btn-sm">Reset</a>
+                            <a href="{{route('admin.calculation')}}" class="btn btn-secondary btn-sm" onclick="reloadPage()">Reset</a>
+
                         </div>
                     </div>
                 </form>
@@ -80,36 +81,21 @@
                             </div></a>
                         </div>
                     </div>
-
                 </form>
                 @elseif($authrole == 3)
                 <form action="{{ route('admin.calculation') }}" method="GET">
                     <div class="d-flex align-items-center">
-                        <!-- Bet Status Dropdown -->
-                        <div class="mr-3">
-                            <select name="bet_status" id="status" class="form-control form-control-sm">
-                                <option value="">All History</option>
-                                <option value="0">Pending</option>
-                                <option value="1">Cancel</option>
-                                <option value="2">Loss</option>
-                                <option value="3">Unclaimed</option>
-                                <option value="4">Claimed</option>
-                            </select>
-                        </div>
-
-                        <!-- User Dropdown -->
                         <div class="mr-3 d-flex align-items-center mt-2">
-
                             <select id="user-select" name="use_terminal_id" class="form-control select2"
                                 style="width: 150px;">
-                                @foreach($results as $admin)
-                                @if($admin->admin_role_id == 4)
-                                <option value="{{ $admin->admin_terminal_id }}">{{ $admin->admin_terminal_id }}</option>
-                                @endif
-                                @endforeach
+                                 @foreach($users as $admin)
+                                        @if($admin->adminrole_id == 4)
+                                        <option value="" selected disabled>Select User Terminal</option>
+                                        <option value="{{ $admin->terminal_id }}">{{ $admin->terminal_id }}</option>
+                                        @endif
+                                        @endforeach
                             </select>
                         </div>
-
                         <!-- Buttons -->
                         <div class="d-flex">
                             <button type="submit" class="btn btn-primary btn-sm mr-2">Search</button>
@@ -118,6 +104,8 @@
                     </div>
                 </form>
                 @endif
+                
+                @if($authrole != 3)
                 <div class="row">
                     <div class="col-sm-3">
                         <form action="{{ route('admin.calculation') }}" method="GET">
@@ -125,7 +113,7 @@
                                 <!-- User Dropdown -->
                                 <div class="mr-3 d-flex align-items-center mt-2">
                                     <select id="user-selectmenual" name="all_user_search_id"
-                                        class="form-control select2" style="width: 150px;">
+                                        class="form-control select2" style="width:200px;">
                                         @foreach($users as $admin)
                                         @if($admin->adminrole_id == 4)
                                         <option value="" selected disabled>Select User Terminal</option>
@@ -137,20 +125,71 @@
                                 <!-- Buttons -->
                                 <div class="d-flex">
                                     <button type="submit" class="btn btn-primary btn-sm mr-2">Search</button>
-                                    <a href="" class="btn btn-secondary btn-sm">Reset</a>
+                                    <!--<a href="" class="btn btn-secondary btn-sm">Reset</a>-->
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
+                @endif
             </div>
         </div>
-        <div class="table_section padding_infor_info">
-            <div class="table-responsive">
-                <div class="text-center">
-                    <h3> data here</h3>
-                </div>
+    <div class="row">
+    @foreach($results as $result)
+    {{dd($results);}}
+    <!-- Card for Pending Bets -->
+    <div class="col-md-4">
+        <div class="card mb-3" style="border: 2px solid #007bff;">
+            <div class="card-header bg-info text-white">Pending Bets</div>
+            <div class="card-body">
+                <p><strong>Total Pending Points:</strong> {{ $result->total_pending_points }}</p>
             </div>
+        </div>
+    </div>
+    
+    <!-- Card for Cancelled Bets -->
+    <div class="col-md-4">
+        <div class="card mb-3" style="border: 2px solid #007bff;">
+            <div class="card-header bg-danger text-white">Cancelled Bets</div>
+            <div class="card-body">
+                <p><strong>Total Cancel Points:</strong> {{ $result->total_cancel_points }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card for Loss Points -->
+    <div class="col-md-4">
+        <div class="card mb-3" style="border: 2px solid #007bff;">
+            <div class="card-header bg-warning text-dark">Loss Points</div>
+            <div class="card-body">
+                <p><strong>Total Loss Points:</strong> {{ $result->total_loss_points }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card for Unclaimed Bets -->
+    <div class="col-md-4">
+        <div class="card mb-3" style="border: 2px solid #007bff;">
+            <div class="card-header bg-secondary text-white">Unclaimed Bets</div>
+            <div class="card-body">
+                <p><strong>Total Unclaimed Points:</strong> {{ $result->total_unclaimed_points }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card for Claimed Bets -->
+    <div class="col-md-4">
+        <div class="card mb-3" style="border: 2px solid #007bff;">
+            <div class="card-header bg-success text-white">Claimed Bets</div>
+            <div class="card-body">
+                <p><strong>Total Claimed Points:</strong> {{ $result->total_claimed_points }}</p>
+            </div>
+        </div>
+    </div>
+    @endforeach
+</div>
+
+
         </div>
     </div>
 </div>
@@ -241,6 +280,7 @@ $(document).ready(function() {
     });
 });
 </script>
+
 
 
 @endsection

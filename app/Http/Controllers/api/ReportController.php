@@ -43,7 +43,8 @@ class ReportController extends Controller
                     ->select(
                         DB::raw('COALESCE(SUM(total_points), 0) as total_points'),
                         DB::raw('COALESCE(SUM(CASE WHEN status = 1 THEN total_points ELSE 0 END), 0) as cancel_points'),
-                        DB::raw('COALESCE(SUM(CASE WHEN status = 4 THEN total_points ELSE 0 END), 0) as claimed_points')
+                        DB::raw('COALESCE(SUM(CASE WHEN status = 4 THEN win_points ELSE 0 END), 0) as claimed_points'),
+                        DB::raw('COALESCE(SUM(CASE WHEN status = 3 THEN win_points ELSE 0 END), 0) as unclaimed_points')
                     )
                     ->whereDate('created_at', '>=', $from)
                     ->whereDate('created_at', '<=', $to)
@@ -79,27 +80,24 @@ class ReportController extends Controller
                $current_report = DB::table('admins')->where('id',$user_id)->first();
                
                if($current_report){
-                   $open_points = 0;
+                     $open_points = $current_report->day_wallet;
+                    $add_points =$current_report->today_add_money;
+                   $current_points = $current_report->wallet;
+               }else{
+                    $open_points = 0;
                    $current_points = 0;
                    $add_points = 0;
-               }else{
-                   $open_points = $current_report->day_wallet;
-                   $current_points = $current_report->wallet;
-                   $add_points =$current_report->today_add_money;
-                   
-                   
-                   
                }
                
                   $total_points = $open_points + $add_points;
-                  $used_points = $current_points - $open_points;
+                  $used_points = $total_points - $current_points;
                   
                 
              
             $report = [
                 'from'=>$from,
                 'to'=>$to,
-                'play_points'=>$play_points,
+                'play_points'=>(int)$play_points,
                 'cancel_points'=>$cancel_points,
                 'net_play_points'=>$net_play_points,
                 'claim_points'=>$claimed_points,

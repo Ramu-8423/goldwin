@@ -690,15 +690,15 @@ public function addwallet(Request $request, $id)
     // Fetching transaction history
     $transactions = DB::table('admins')
         ->join('TransactionHistory', 'admins.id', '=', 'TransactionHistory.user_id')
-        ->select('admins.id as admin_id', 'admins.role_id as role', 'admins.terminal_id as terminal_id', 'TransactionHistory.id as transaction_id', 
+        ->select('admins.id as admin_id', 'admins.role_id as role', 'admins.terminal_id as terminal_id', 'TransactionHistory.id as transaction_id', 'TransactionHistory.transaction_perform_by as transaction_perform_by',
         'TransactionHistory.amount as transamount', 'TransactionHistory.result1add2deduct as description', 'TransactionHistory.created_at as transtime')
         ->where('admins.id', $id)
         ->get();
 
     // Fetching payment received data
     $paymentricive = DB::table('admins')
-        ->join('PaymentReceive', 'admins.id', '=', 'PaymentReceive.user_id')
-        ->select('admins.*', 'PaymentReceive.receiveamount','PaymentReceive.user_id', 'PaymentReceive.id', 'PaymentReceive.created_at as payment_created_at', 'PaymentReceive.addedby')
+        ->join('PaymentRicive', 'admins.id', '=', 'PaymentRicive.user_id')
+        ->select('admins.*','PaymentRicive.receiveamount','PaymentRicive.user_id', 'PaymentRicive.id', 'PaymentRicive.created_at as payment_created_at', 'PaymentRicive.addedby')
         ->where('admins.id', $id)
         ->get();
 

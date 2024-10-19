@@ -5,40 +5,64 @@
     <div class="white_shd full margin_bottom_30">
         <div class="full graph_head">
             <div class="heading1 margin_0">
-                @if($authrole != 3)
                 <div class="row">
-                    <form action="{{ route('admin.bethistory') }}" method="GET"
-                        class="d-flex align-items-center ml-auto">
-                        <select name="use_terminal_id" id="uniqueTerminalSelect"
-                            class="form-control custom-select-terminal" style="width: 160px; margin-top: 5px;">
-                            <!-- Added margin-top -->
-                            <option value="">Select Terminal</option>
-                            @php
-                            $uniqueTerminals = $results->pluck('admin_terminal_id')->unique();
-                            @endphp
-                            @foreach($uniqueTerminals as $terminal)
-                            <option value="{{ $terminal }}">{{ $terminal }}</option>
-                            @endforeach
-                        </select>
-                        <button id="uniqueSubmitButton" class="btn btn-primary btn-sm ml-2 custom-button"
-                            style="margin-top: -5px;">Button</button> <!-- Keep button unchanged -->
-                    </form>
+                    @if($authrole != 3)
+                    <div class="col-sm-3">
+                        <form action="{{ route('admin.bethistory') }}" method="GET"
+                            class="d-flex align-items-center ml-auto">
+                            <select name="use_terminal_id" id="uniqueTerminalSelect"
+                                class="form-control custom-select-terminal" style="width: 160px; margin-top: 5px;">
+                                <option value="" disabled selected>Select a terminal</option> <!-- Default option -->
+                                @foreach($users as $admin)
+                                @if($admin->adminrole_id == 4)
+                                <option value="{{ $admin->terminal_id }}">
+                                    {{ $admin->terminal_id }}
+                                </option>
+                                @endif
+                                @endforeach
+                            </select>
+                            <button id="uniqueSubmitButton" class="btn btn-primary btn-sm ml-2 custom-button"
+                                style="margin-top: -5px;">search</button> <!-- Keep button unchanged -->
+                        </form>
+                    </div>
+                    <div class="col-sm-4">
+                        <form action="{{ route('admin.bethistory') }}" method="GET"
+                            class="d-flex align-items-center ml-5">
+                            <div class="input-group-sm mb-3 d-flex">
+                                <input type="date" name="date" class="form-control" required>
+                                <div class="d-flex">
+                                    <button class="btn btn-primary btn-sm" type="submit">Filter</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-sm-4">
+                        <form action="{{ route('admin.bethistory') }}" method="GET" class="d-flex align-items-center">
+                            <div class="input-group-sm mb-3 d-flex">
+                                <input type="date" name="start_date" class="form-control" required>
+                                <input type="date" name="end_date" class="form-control ml-2" required>
+                                <div class="d-flex">
+                                    <button class="btn btn-primary btn-sm" type="submit">Filter</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    @endif
+
                 </div>
-                @endif
-                
                 @if($authrole == 1)
                 <form action="{{ route('admin.bethistory') }}" method="GET">
                     <div class="row d-flex">
                         <div class="col-sm-2 text-center ml-1">
                             <span class="me-2">All Status</span>
                             <select name="bet_status" id="status" class="form-control form-control-sm  ml-2">
-                            <option value="">All History</option>
-                            <option value="0">Pending</option>
-                            <option value="1">Cancel</option>
-                            <option value="2">Loss</option>
-                            <option value="3">Unclaimed</option>
-                            <option value="4">Claimed</option>
-                        </select>
+                                <option value="">All History</option>
+                                <option value="0">Pending</option>
+                                <option value="1">Cancel</option>
+                                <option value="2">Loss</option>
+                                <option value="3">Unclaimed</option>
+                                <option value="4">Claimed</option>
+                            </select>
                             </select>
                         </div>
                         <!-- Stokist Section -->
@@ -102,7 +126,7 @@
                     </div>
                     <!-- User Section -->
                     <div class="col-sm-3 text-center ml-5">
-                        <span class="me-2">User</span>
+                        <span class="me-2">&nbsp;&nbsp;User&nbsp;&nbsp;&nbsp;</span>
                         <select id="user-select" name="use_terminal_id" class="form-control select2 me-2"
                             style="width: auto;">
                             <option value="">All User Terminal</option>
@@ -119,28 +143,58 @@
                 </div>
             </form>
             @elseif($authrole == 3)
-            <form action="{{ route('admin.bethistory') }}" method="GET">
-                <div class="d-flex align-items-center">
-                    <!-- User Dropdown -->
-                    <div class="mr-3 d-flex align-items-center mt-2">
-                        <select id="user-select" name="use_terminal_id" class="form-control select2"
-                            style="width: 150px;">
-                            @foreach($results as $admin)
-                            @if($admin->admin_role_id == 4)
-                            <option value="{{ $admin->admin_terminal_id }}">{{ $admin->admin_terminal_id }}</option>
-                            @endif
-                            @endforeach
-                        </select>
-                    </div>
-                    <!-- Buttons -->
-                    <div class="d-flex">
-                        <button type="submit" class="btn btn-primary btn-sm mr-2">Search</button>
-                        <a href="" class="btn btn-secondary btn-sm">Reset</a>
-                    </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <form action="{{ route('admin.bethistory') }}" method="GET">
+                        <div class="d-flex align-items-center">
+                            <!-- User Dropdown -->
+                            <div class="mr-3 d-flex align-items-center mt-2">
+                                <select id="user-select" name="use_terminal_id" class="form-control select2"
+                                    style="width: 150px;">
+                                    <option value="" disabled selected>Select a terminal</option>
+                                    <!-- Default option -->
+                                    @foreach($results as $admin)
+                                    @if($admin->admin_role_id == 4)
+                                    <option value="{{ $admin->admin_terminal_id }}">{{ $admin->admin_terminal_id }}
+                                    </option>
+                                    @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                            <!-- Buttons -->
+                            <div class="d-flex">
+                                <button type="submit" class="btn btn-primary btn-sm mr-2">Search</button>
+                                <a href="" class="btn btn-secondary btn-sm">Reset</a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <form action="{{ route('admin.bethistory') }}" method="GET" class="d-flex align-items-center ml-5 mt-2">
+                        <div class="input-group-sm mb-3 d-flex">
+                            <input type="date" name="date" class="form-control" required>
+                            <div class="d-flex">
+                                <button class="btn btn-primary btn-sm" type="submit">Filter</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <form action="{{ route('admin.bethistory') }}" method="GET" class="d-flex align-items-center">
+                        <div class="input-group-sm mb-3 d-flex">
+                            <input type="date" name="start_date" class="form-control" required>
+                            <input type="date" name="end_date" class="form-control ml-2" required>
+                            <div class="d-flex">
+                                <button class="btn btn-primary btn-sm" type="submit">Filter</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
             @endif
-
         </div>
     </div>
     <div class="table_section padding_infor_info">
