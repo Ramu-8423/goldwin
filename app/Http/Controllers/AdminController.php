@@ -87,6 +87,7 @@ class AdminController extends Controller
        
        $inside_stockist = null;
        $inside_substockist = null;
+       $status = null;
        if($role_id==3){
            //creating substockisit, so inside_substockist = null;
            $inside_stockist = DB::table('admins')->where('terminal_id',$under_role_terminal_id)->value('id');
@@ -101,6 +102,14 @@ class AdminController extends Controller
            
        }
      //   dd($role_id,$inside_stockist,$inside_substockist,$terminal_id,$password,$login_id);
+     if($login_role_id ==1)
+     {
+         $status=1;
+     }
+     else
+     {
+         $status=2;
+     }
         
        $insert = DB::table('admins')->insert([
                          'role_id'=>$role_id,
@@ -109,7 +118,7 @@ class AdminController extends Controller
                          'terminal_id'=>$terminal_id,
                          'password'=>$password,
                          'created_by'=>$login_id,
-                         'status'=>2
+                         'status'=>$status
                 ]);
                
                 if($insert){
@@ -205,8 +214,12 @@ class AdminController extends Controller
            }
            Session::put('Auth_id', $login->id);
            $role = Session::get('role_id');
+           if($role==4)
+           {
+              return redirect()->route('login_page')->with('error','Inactive user account.');
+           }
             $request->session()->put('terminal_id', $login->terminal_id); 
-           return redirect()->route('admin.dashboard');
+           return redirect()->route('admin.calculation');
         }else{
             return redirect()->route('login_page')->with('error','Invalid Credentials');
         }

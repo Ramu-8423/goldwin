@@ -1,6 +1,5 @@
 @extends('admin.body.adminmaster')
 @section('content')
-
 <div class="col-md-12 margin_top_30">
     <div class="white_shd full margin_bottom_30">
         <div class="full graph_head">
@@ -12,7 +11,7 @@
                             class="d-flex align-items-center ml-auto">
                             <select name="use_terminal_id" id="uniqueTerminalSelect"
                                 class="form-control custom-select-terminal" style="width: 160px; margin-top: 5px;">
-                                <option value="" disabled selected>Select a terminal</option> <!-- Default option -->
+                                <option value="" disabled selected>Select terminal</option> <!-- Default option -->
                                 @foreach($users as $admin)
                                 @if($admin->adminrole_id == 4)
                                 <option value="{{ $admin->terminal_id }}">
@@ -67,7 +66,7 @@
                         </div>
                         <!-- Stokist Section -->
                         <div class="col-sm-3 text-center ml-1">
-                            <span class="me-2">Stokist</span>
+                            <span class="me-2">&nbsp;&nbsp;Stokist&nbsp;&nbsp;</span>
                             <select id="stockist-select" name="st_terminal_id" class="form-control select2 me-2"
                                 style="width: auto;">
                                 <option value="">All Stokist Terminal</option>
@@ -94,7 +93,7 @@
                             <span class="me-2">User</span>
                             <select id="user-select" name="use_terminal_id" class="form-control select2 me-2"
                                 style="width: auto;">
-                                <option value="">All User Terminal</option>
+                                <option value=""> User Terminal</option>
                                 <!-- Populate user options as needed -->
                             </select>
                         </div>
@@ -102,7 +101,8 @@
                         <div class="col-sm-1 ml-2">
                             <div class="d-flex">
                                 <button type="submit" class="btn btn-primary btn-sm mt-4">Search</button>
-                                <a href=""><button class="btn btn-secondary  btn-sm mt-4  ml-1">Reset</button></a>
+                                <a href="{{route('admin.bethistory')}}"><button
+                                        class="btn btn-secondary  btn-sm mt-4  ml-1">Reset</button></a>
                             </div>
                         </div>
                     </div>
@@ -143,35 +143,29 @@
                 </div>
             </form>
             @elseif($authrole == 3)
-            <div class="row">
+            <div class="row d-flex align-items-center">
+                <!-- User Dropdown Form -->
                 <div class="col-sm-3">
                     <form action="{{ route('admin.bethistory') }}" method="GET">
                         <div class="d-flex align-items-center">
-                            <!-- User Dropdown -->
-                            <div class="mr-3 d-flex align-items-center mt-2">
-                                <select id="user-select" name="use_terminal_id" class="form-control select2"
-                                    style="width: 150px;">
-                                    <option value="" disabled selected>Select a terminal</option>
-                                    <!-- Default option -->
-                                    @foreach($results as $admin)
-                                    @if($admin->admin_role_id == 4)
-                                    <option value="{{ $admin->admin_terminal_id }}">{{ $admin->admin_terminal_id }}
-                                    </option>
-                                    @endif
-                                    @endforeach
-                                </select>
-                            </div>
-                            <!-- Buttons -->
-                            <div class="d-flex">
-                                <button type="submit" class="btn btn-primary btn-sm mr-2">Search</button>
-                                <a href="" class="btn btn-secondary btn-sm">Reset</a>
-                            </div>
+                            <select id="user-select" name="use_terminal_id" class="form-control select2"
+                                style="width: 150px;">
+                                <option value="" disabled selected>Select a terminal</option>
+                                @foreach($users as $admin)
+                                @if($admin->adminrole_id == 4)
+                                <option value="{{ $admin->terminal_id }}">{{ $admin->terminal_id }}</option>
+                                @endif
+                                @endforeach
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm ml-2">Search</button>
+                            <a href="{{ route('admin.bethistory') }}" class="btn btn-secondary btn-sm ml-1">Reset</a>
                         </div>
                     </form>
                 </div>
-                <div class="col-sm-2"></div>
-                <div class="col-sm-5">
-                    <form action="{{ route('admin.bethistory') }}" method="GET" class="d-flex align-items-center ml-5 mt-2">
+                <div class="col-sm-1"></div>
+                <!-- Date Filter Form -->
+                <div class="col-sm-4">
+                    <form action="{{ route('admin.bethistory') }}" method="GET" class="d-flex align-items-center ml-3">
                         <div class="input-group-sm mb-3 d-flex">
                             <input type="date" name="date" class="form-control" required>
                             <div class="d-flex">
@@ -180,9 +174,9 @@
                         </div>
                     </form>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
+
+                <!-- Date Range Filter Form -->
+                <div class="col-sm-3">
                     <form action="{{ route('admin.bethistory') }}" method="GET" class="d-flex align-items-center">
                         <div class="input-group-sm mb-3 d-flex">
                             <input type="date" name="start_date" class="form-control" required>
@@ -194,6 +188,7 @@
                     </form>
                 </div>
             </div>
+
             @endif
         </div>
     </div>
@@ -418,7 +413,7 @@ $(document).ready(function() {
 <script>
 $(document).ready(function() {
     $('#uniqueTerminalSelect').select2({
-        placeholder: "Select Terminal",
+        placeholder: "Select All",
         allowClear: true
     });
 });

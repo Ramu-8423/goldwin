@@ -97,10 +97,10 @@ class ReportController extends Controller
             $report = [
                 'from'=>$from,
                 'to'=>$to,
-                'play_points'=>(int)$play_points,
-                'cancel_points'=>$cancel_points,
+                'play_points'=>(string)$play_points,
+                'cancel_points'=>(string)$cancel_points,
                 'net_play_points'=>$net_play_points,
-                'claim_points'=>$claimed_points,
+                'claim_points'=>(string)$claimed_points,
                 'opt_play_points'=>$opt_play_points,
                 'discount_points'=>$discounted_points,
                 'gross_points'=>$gross_points,

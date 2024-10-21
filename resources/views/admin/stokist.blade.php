@@ -29,7 +29,6 @@
                                 <select id="substockist-select" class="form-control select2 me-2" style="width: auto;">
                                     <option value="">Select Substockist</option>
                                 </select>
-
                                 <select id="user-select" class="form-control select2 me-2" style="width: auto;">
                                     <option value="">Select User</option>
                                 </select>
@@ -37,7 +36,7 @@
                             @elseif($roles == 2)
                             <div class="d-flex flex-wrap ml-3">
                                 <select id="substockist-select" class="form-control select2 me-2" style="width: auto;">
-                                    <option value="">Select Stockist</option>
+                                    <option value="">Select Substockist</option>
                                     @foreach($admins as $admin)
                                     @if($admin->role_id == 3)
                                     <option value="{{ $admin->id }}">{{ $admin->terminal_id }}</option>

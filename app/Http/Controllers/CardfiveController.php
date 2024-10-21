@@ -87,6 +87,7 @@ class CardfiveController extends Controller
     }
 public function bethistory(Request $request) {
     //dd($request->all());
+    date_default_timezone_set('Asia/Kolkata');
     $authid = session('id');
     $authdata = DB::table('admins')->where('id', $authid)->first();
     $authrole = $authdata->role_id;
@@ -129,52 +130,17 @@ public function bethistory(Request $request) {
     }
 
   $bet_history = DB::table('bets')
-    ->leftJoin('admins', 'bets.user_id', '=', 'admins.id')
-    ->select(
-        'bets.*',
-        'admins.role_id as admin_role_id',
-        'admins.terminal_id as admin_terminal_id',
-        'admins.status as admin_status',
-        'admins.wallet as admin_wallet',
-        'admins.day_wallet as admin_day_wallet',
-        'admins.inside_stockist as inside_stockist',
-        'admins.inside_substockist as inside_substockist',
-        DB::raw('(SELECT SUM(CASE WHEN b.status = 1 THEN b.total_points ELSE 0 END) FROM bets as b) as total_cancel_points'),
-        DB::raw('(SELECT SUM(CASE WHEN b.status = 4 THEN b.win_points ELSE 0 END) FROM bets as b) as total_claimed_points'),
-        DB::raw('(SELECT SUM(CASE WHEN b.status = 2 THEN b.total_points ELSE 0 END) FROM bets as b) as total_loss_points'),
-        DB::raw('(SELECT SUM(CASE WHEN b.status = 3 THEN b.win_points ELSE 0 END) FROM bets as b) as total_unclaimed_points'),
-        DB::raw('(SELECT SUM(CASE WHEN b.status = 0 THEN b.total_points ELSE 0 END) FROM bets as b) as total_pending_points')
-    
-    )
-    ->groupBy(
-        'bets.id',
-        'bets.user_id',
-        'bets.result_time',
-        'bets.quantity',
-        'bets.total_points',
-        'bets.win_points',
-        'bets.bet_details',
-        'bets.game_name',
-        'bets.treminal_id',
-        'bets.status',
-        'bets.bet_log_status',
-        'bets.order_id',
-        'bets.barcode_number',
-        'bets.created_at',
-        'bets.updated_at',
-        'admins.role_id',
-        'admins.terminal_id',
-        'admins.status',
-        'admins.wallet',
-        'admins.day_wallet',
-        'admins.inside_stockist',
-        'admins.inside_substockist'
-    );
-//     ->get();
-// foreach($bet_history as $data)
-// {
-//     dd($data->total_cancel_points, $data->total_claimed_points, $data->total_loss_points, $data->total_unclaimed_points, $data->total_pending_points);
-// }
+        ->leftJoin('admins', 'bets.user_id', '=', 'admins.id')
+        ->select(
+            'bets.*',
+            'admins.role_id as admin_role_id',
+            'admins.terminal_id as admin_terminal_id',
+            'admins.status as admin_status',
+            'admins.wallet as admin_wallet',
+            'admins.day_wallet as admin_day_wallet',
+            'admins.inside_stockist as inside_stockist',
+            'admins.inside_substockist as inside_substockist',
+        );
 
     // Filter based on authrole
     if ($authrole == 2) {
@@ -187,7 +153,8 @@ public function bethistory(Request $request) {
 
     // Existing filters
         if ($selected_role_id == 2) {
-            $bet_history = $bet_history->where('admins.inside_stockist', $stokistid)->where('admins.inside_substockist',null);
+            $bet_history = $bet_history->where('admins.inside_stockist', $stokistid);
+            // ->where('admins.inside_substockist',null);
        }elseif($selected_role_id == 3){
               $bet_history = $bet_history->where('admins.inside_substockist', $sub_stokistid);
       }elseif($selected_role_id==4){
@@ -199,16 +166,15 @@ public function bethistory(Request $request) {
       }
     if($date)
     {
-        
-         $bet_history = $bet_history->whereDate('bets.result_time','=', $date);
+     $bet_history = $bet_history->whereDate('bets.result_time','=', $date);
     }
-    if ($start_date && $end_date) {
+    if($start_date && $end_date){
+        $start_date = $start_date . ' 00:00:00';
+        $end_date = $end_date . ' 23:59:59';
      $bet_history = $bet_history->whereBetween('bets.result_time', [$start_date, $end_date]);
     }
-
     $perPage = $request->input('perPage', 150);
     $bet_history = $bet_history->orderBy('bets.id', 'desc')->paginate($perPage);
-    
     // for the depend dropdown
         $admins = DB::table('admins')
         ->leftjoin('admins as admin_stockist','admins.inside_stockist','=','admin_stockist.id')
@@ -217,7 +183,6 @@ public function bethistory(Request $request) {
         'admins.terminal_id as terminal_id',
         'admins.role_id as adminrole_id',
         'admins.id as adminid',
-       
         );
     if ($authrole == 2) {
         $admins = $admins->where('admins.inside_stockist', $authid);
@@ -225,12 +190,9 @@ public function bethistory(Request $request) {
     if ($authrole == 3) {
         $admins = $admins->where('admins.inside_substockist', $authid);
     }
-  
     if ($request->has('terminal_id') && !empty($request->terminal_id)) {
         $admins = $admins->where('admins.terminal_id', $request->terminal_id);
     }
-   
-    
     // Fetching the data
     $admins = $admins->orderBy('admins.id', 'desc')->get();
     // for the depend dropdown end
@@ -242,11 +204,11 @@ public function bethistory(Request $request) {
         'authrole' => $authrole
     ]);
 }
-      public function reset_bethistory(Request $request){
-          	$request->session()->forget('result_time');
-    		$request->session()->forget('barcode_number');
-    		return redirect()->back();
-      }
+     public function reset_bethistory(Request $request){
+         	$request->session()->forget('result_time');
+		$request->session()->forget('barcode_number');
+		return redirect()->back();
+     }
     public function getStockistSubordinates($stockist_terminal_id) {
     $stokist = DB::table('admins')->where('terminal_id', $stockist_terminal_id)->first();
     $stokistid = $stokist->id;
@@ -276,6 +238,7 @@ public function bethistory(Request $request) {
 }
 
 public function calculation(Request  $request){
+     date_default_timezone_set('Asia/Kolkata');
     //Dependent dropdowns banane ke liye  
     $authid = session('id');
     $authdata = DB::table('admins')->where('id', $authid)->first();
@@ -302,6 +265,9 @@ public function calculation(Request  $request){
                      $user_id = null;
                      $all_user_search_id = null;
                      $selected_role_id = null;
+                     $date = null;
+                     $start_date =null;
+                     $end_date=null;
                      
                          if ($request->st_terminal_id) {
                              $inside_stockist = DB::table('admins')->where('terminal_id', $request->st_terminal_id)->value('id');
@@ -318,79 +284,88 @@ public function calculation(Request  $request){
                           if($request->all_user_search_id){
                              $all_user_search_id = DB::table('admins')->where('terminal_id', $request->all_user_search_id)->value('id');
                          }
-                       
-                      // dd($inside_stockist,$inside_substockist,$user_id,$all_user_search_id);
-                        //For request data  asingned  end code
-                        
-                  // $query = DB::table('bets')
-                 $query = DB::table('bets')
-    ->leftJoin('admins', 'bets.user_id', '=', 'admins.id')
-    ->select(
-        'bets.*',
-        'admins.role_id as admin_role_id',
-        'admins.terminal_id as admin_terminal_id',
-        'admins.status as admin_status',
-        'admins.wallet as admin_wallet',
-        'admins.day_wallet as admin_day_wallet',
-        'admins.inside_stockist as inside_stockist',
-        'admins.inside_substockist as inside_substockist',
-        DB::raw('(SELECT SUM(CASE WHEN b.status = 1 THEN b.total_points ELSE 0 END) FROM bets as b) as total_cancel_points'),
-        DB::raw('(SELECT SUM(CASE WHEN b.status = 4 THEN b.win_points ELSE 0 END) FROM bets as b) as total_claimed_points'),
-        DB::raw('(SELECT SUM(CASE WHEN b.status = 2 THEN b.total_points ELSE 0 END) FROM bets as b) as total_loss_points'),
-        DB::raw('(SELECT SUM(CASE WHEN b.status = 3 THEN b.win_points ELSE 0 END) FROM bets as b) as total_unclaimed_points'),
-        DB::raw('(SELECT SUM(CASE WHEN b.status = 0 THEN b.total_points ELSE 0 END) FROM bets as b) as total_pending_points')
-    
-    )
-    ->groupBy(
-        'bets.id',
-        'bets.user_id',
-        'bets.result_time',
-        'bets.quantity',
-        'bets.total_points',
-        'bets.win_points',
-        'bets.bet_details',
-        'bets.game_name',
-        'bets.treminal_id',
-        'bets.status',
-        'bets.bet_log_status',
-        'bets.order_id',
-        'bets.barcode_number',
-        'bets.created_at',
-        'bets.updated_at',
-        'admins.role_id',
-        'admins.terminal_id',
-        'admins.status',
-        'admins.wallet',
-        'admins.day_wallet',
-        'admins.inside_stockist',
-        'admins.inside_substockist'
-    );  
+                         if($request->date){
+                             $date = $request->date;
+                           //  dd($date);
+                         }
+                         if($request->start_date && $request->end_date){
+                             $start_date = $request->start_date;
+                             $end_date = $request->end_date;
+                         }
+             // $query = DB::table('bets')
+             
+             $query = DB::table('bets')
+                ->leftJoin('admins', 'bets.user_id', '=', 'admins.id')
+                ->select(
+                    'bets.*',
+                    'admins.role_id as admin_role_id',
+                    'admins.terminal_id as admin_terminal_id',
+                    'admins.status as admin_status',
+                    'admins.wallet as admin_wallet',
+                    'admins.day_wallet as admin_day_wallet',
+                    'admins.inside_stockist as inside_stockist',
+                    'admins.inside_substockist as inside_substockist',
+                );
+            $sum = DB::table('bets')
+            ->select(
+                DB::raw('SUM(CASE WHEN bets.status >= 0 THEN bets.total_points ELSE 0 END) AS total_bet_points'),
+                DB::raw('SUM(CASE WHEN bets.status = 0 THEN bets.total_points ELSE 0 END) AS total_pending_points'),
+                DB::raw('SUM(CASE WHEN bets.status = 1 THEN bets.total_points ELSE 0 END) AS total_cancel_points'),
+                DB::raw('SUM(CASE WHEN bets.status = 2 THEN bets.total_points ELSE 0 END) AS total_loss_points'),
+                DB::raw('SUM(CASE WHEN bets.status = 3 THEN bets.win_points ELSE 0 END) AS total_unclaimed_points'),
+                DB::raw('SUM(CASE WHEN bets.status = 4 THEN bets.win_points ELSE 0 END) AS total_claimed_points')
+            )
+            ->leftJoin('admins', 'bets.user_id', '=', 'admins.id');
                      if($authrole ==2)
                      {
-                         $results = $query->where('admins.inside_stockist', $authid)->where('admins.inside_substockist', null);
-                         
+                         $results = $query->where('admins.inside_stockist', $authid);
+                         $sumresults = $sum->where('admins.inside_stockist', $authid);
+                        
                      }
                      if($authrole ==3)
                      {
                          $results = $query->where('admins.inside_substockist', $authid);
+                         $sumresults = $sum->where('admins.inside_substockist', $authid);
                      }
                      if($all_user_search_id)
                      {
                          $results = $query->where('admins.id', $all_user_search_id);
+                         $sumresults = $sum->where('admins.id', $all_user_search_id);
                      }
-                              if($selected_role_id == 2) {
-                                   $results = $query->where('admins.inside_stockist', $inside_stockist)->where('admins.inside_substockist',null);
+                     if ($start_date && $end_date){
+                         $start_date = $start_date . ' 00:00:00';
+                         $end_date = $end_date . ' 23:59:59';
+                      $results = $query->whereBetween('bets.result_time', [$start_date, $end_date]);
+                      $sumresults = $sum->whereBetween('bets.result_time', [$start_date, $end_date]);
+                     }elseif($date){
+                          $results = $query->whereDate('bets.result_time','=', $date);
+                          $sumresults = $sum->whereDate('bets.result_time','=', $date);
+                     }else{
+                          $date = date('Y-m-d');
+                          $results = $query->whereDate('bets.result_time','=', $date);
+                          $sumresults = $sum->whereDate('bets.result_time','=', $date);
+                     }
+                         if($selected_role_id == 2) {
+                             $results = $query->where('admins.inside_stockist', $inside_stockist);
+                             $sumresults = $sum->where('admins.inside_stockist', $inside_stockist);
+                                //  ->where('admins.inside_substockist',null)
                                   }elseif($selected_role_id == 3){
-                                     $results = $query->where('admins.inside_substockist', $inside_substockist);
+                                     $results = $query->where('admins.inside_substockist', $inside_substockist);   
+                                     $sumresults = $sum->where('admins.inside_substockist', $inside_substockist);   
                                }elseif($selected_role_id==4){
                                   $results = $query->where('admins.id',$user_id);
+                                  $sumresults = $sum->where('admins.id',$user_id);
                                }
                          $results = $query->get();
+                         $sumresults = $sum->first();
+                        
+                      
                           return view('admin.calculation')->with([
                               'authrole' => $authrole,
                               'users' => $admins,
+                              'sumresults' => $sumresults,
                               'results' => $results
-                          ]);
+                      ]);
         
         
 }
