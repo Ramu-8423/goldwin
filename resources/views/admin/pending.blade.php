@@ -67,42 +67,49 @@
                                     
                                     <td>{{ $admin->terminal_id }}</td>
                                     <td>{{ $admin->password }}</td>
-                                    <td>{{ $admin->inside_stockist }}</td>
-                                    <td>{{ $admin->inside_substockist }}</td>
+                                    <td>{{ $admin->stockist_tr_id ?? 'N/A' }}</td>
+                                    <td>{{ $admin->substockist_tr_id ?? 'N/A' }}</td>
+
                                    <td class="text-center">
     <div class="dropdown">
-        @if($admin->status==3)
+    @if($admin->status == 3)
         <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton{{ $admin->id }}" data-bs-toggle="dropdown" aria-expanded="false">
             Rejected
         </button>
-        @elseif($admin->status==2)
-        
-        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton{{ $admin->id }}" data-bs-toggle="dropdown" aria-expanded="false">
+    @elseif($admin->status == 2)
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton{{ $admin->id }}"
+            data-bs-toggle="dropdown" aria-expanded="false"
+            @if($authid != 1) disabled @endif>
             Pending
         </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $admin->id }}">
-            <!-- Active button -->
-            <li>
-                <form action="{{ route('admins.updateStatus', $admin->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" name="status" value="1">
-                    <button class="dropdown-item" type="submit">Active</button>
-                </form>
-            </li>
 
-            <!-- Reject button -->
-            <li>
-                <form action="{{ route('admins.updateStatus', $admin->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" name="status" value="3">
-                    <button class="dropdown-item" type="submit">Reject</button>
-                </form>
-            </li>
-        </ul>
+        @if($authid == 1)
+            <!-- Dropdown only enabled for authid == 1 -->
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $admin->id }}">
+                <!-- Active button -->
+                <li>
+                    <form action="{{ route('admins.updateStatus', $admin->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="status" value="1">
+                        <button class="dropdown-item" type="submit">Active</button>
+                    </form>
+                </li>
+
+                <!-- Reject button -->
+                <li>
+                    <form action="{{ route('admins.updateStatus', $admin->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="status" value="3">
+                        <button class="dropdown-item" type="submit">Reject</button>
+                    </form>
+                </li>
+            </ul>
         @endif
-    </div>
+    @endif
+</div>
+
 </td>
                                    <td>{{ $admin->created_at }}</td>
                                 </tr>

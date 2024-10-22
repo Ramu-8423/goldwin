@@ -53,16 +53,41 @@ class AdminController extends Controller
     
     
       public function game_setting(Request $req){
-        $site_message = $req->site_message;
-        $percentage = $req->percentage;
-        $result = $req->result;
-        $status = $req->status;
-        $a =   DB::table('game_settings')->where('id',1)->update([
-           'site_message'=>$site_message,
-           'winning_per'=>$percentage,
-           'result_type'=>$result,
-           'status'=>$status,
-           ]);
+        // $site_message = $req->site_message;
+        // $percentage = $req->percentage;
+        $result = $req->result??3;
+        // $status = $req->status;
+        // $a =   DB::table('game_settings')->where('id',1)->update([
+        //   'site_message'=>$site_message,
+        //   'winning_per'=>$percentage,
+        //   'result_type'=>$result,
+        //   'status'=>$status,
+        //   ]);
+           
+           
+          if($result==3){
+              // jb result auto kiya jaye tb pichhle pending result ko card number allocate ho jaye aur us result time pr jo bet lga ho usko winning card number ke according uslka result decleareed ho jaye
+              // result table se sbhi record leke aaye jha result null ho
+              // ab hr ek result ki time nikal kr us time se lge bet leke aaye bets table se 
+              // ek empty array lekr usme sbhi card ki bet ko corresponding card pr rkh de .
+              //  ab us card me winning percentage ki logic ke hissan se bet ki status change krvana hai aur wallet update krvana hoga.
+              
+              
+              $null_result = DB::table('results')->where('card_number','=',null)->orderBy('id','desc')->get();
+               foreach($null_result as $result){
+                   dd($result);
+               }
+              
+              
+          } 
+           
+           
+           
+           
+           
+           
+           
+           
            
           if($a){
            return redirect()->back()->with('success','Updated successfully..');   
@@ -512,8 +537,6 @@ public function stokistlist(Request $request) {
         ->with('roles', $role_id);
 }
 
-
- 
 public function getSubstockists($stockistId)
 {
     $substockists = DB::table('admins')
@@ -738,12 +761,49 @@ public function receiveamount(Request $request, $id)
     ]);
     return redirect()->back()->with('success', 'amount Received with wistory add!');
 }
+   
+   public function userpending(?string $status = null)
+{
+    $authid = Session::get('Auth_id');  
+    $role_id = Session::get('role_id');  
 
-  public function userpending(? string $status)
-    {
-    $user = DB::table('admins')->where('status', $status)->get();
-    return view('admin.pending')->with('user', $user);
+    $query = DB::table('admins')
+        ->leftJoin('admins as admin_stockist', 'admins.inside_stockist', '=', 'admin_stockist.id')
+        ->leftJoin('admins as admin_substockist', 'admins.inside_substockist', '=', 'admin_substockist.id')
+        ->select(
+            'admins.id as id',
+            'admins.role_id as role_id',
+            'admins.created_by as created_by',
+            'admins.created_inside as created_inside',
+            'admins.inside_stockist as inside_stockist',
+            'admins.inside_substockist as inside_substockist',
+            'admins.terminal_id as terminal_id',
+            'admins.password as password',
+            'admins.wallet as wallet',
+            'admins.day_wallet as day_wallet',
+            'admins.today_add_money as today_add_money',
+            'admins.receiveamount as receiveamount',
+            'admins.status as status',
+            'admins.reason as reason',
+            'admins.created_at as created_at',
+            'admins.updated_at as updated_at',
+            'admin_stockist.terminal_id as stockist_tr_id',
+            'admin_substockist.terminal_id as substockist_tr_id'
+        );
+        
+    if($role_id == 2 && $role_id) {
+        $query->where('admins.inside_stockist', $authid)->where('admins.inside_stockist', $authid);
     }
+    if($role_id == 3 && $role_id == 3) {
+        $query->where('admins.inside_substockist', $authid)->where('admins.inside_substockist', $authid);
+    }
+    if(!is_null($status)) {
+        $query->where('admins.status', $status);
+    }
+    $user = $query->get();
+    return view('admin.pending')->with(['user' => $user, 'authid' => $authid]);
+}
+
     
    public function updateStatuss(Request $request, $id)
     {

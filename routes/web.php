@@ -22,7 +22,7 @@ Route::get('/wallet', function () {
     return view('wallet.index');
 })->name('wallet.index');
 
-Route::post('/game_setting', [AdminController::class, 'game_setting'])->name('game_setting');
+Route::any('/game_setting', [AdminController::class, 'game_setting'])->name('game_setting');
 Route::get('/fetch', [CardfiveController::class, 'fetch_data'])->name('fetch_data');
 Route::post('/admin_prediction', [CardfiveController::class, 'admin_prediction'])->name('admin_prediction');
 Route::get('/',[AdminController::class,'login_page'])->name('login_page');

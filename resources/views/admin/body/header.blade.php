@@ -33,7 +33,7 @@
                               
                                     <a class="dropdown-toggle" data-toggle="dropdown"><img class="img-responsive rounded-circle" src="images/layout_img/user_img.jpg" alt="#" /><span class="name_user"> {{ Session::get('terminal_id') }}</span></a>
                                     <div class="dropdown-menu">
-                                       <a class="dropdown-item" href="profile.html">My Profile</a>
+                                       <a class="dropdown-item" href="#">My Profile</a>
                                        <a class="dropdown-item" href="{{route('logout')}}"><span>Log Out</span> <i class="fa fa-sign-out"></i></a>
                                     </div>
                                  </li>

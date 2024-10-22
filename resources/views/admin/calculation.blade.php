@@ -29,20 +29,19 @@
                                 <!-- Populate substockist options as needed -->
                             </select>
                         </div>
-
                         <!-- User Section -->
                         <div class="col-sm-3 text-center mb-3">
-                            <span class="me-2">User</span>
-                            <select id="user-select" name="use_terminal_id" class="form-control select2">
-                                <option value="">All User Terminal</option>
+                     <span class="me-2">&nbsp;&nbsp;&nbsp;User&nbsp;&nbsp;&nbsp;</span>
+                            <select id="user-select" name="use_terminal_id" class="form-control select2 me-2"
+                                style="width: auto;">
+                                <option value=""> User Terminal</option>
                                 <!-- Populate user options as needed -->
                             </select>
                         </div>
-
                         <!-- Buttons Section -->
                         <div class="col-sm-3 d-flex align-items-center justify-content-center mb-3">
                             <button type="submit" class="btn btn-primary btn-sm mr-2">Search</button>
-                            <a href="{{route('admin.calculation')}}" class="btn btn-secondary btn-sm" onclick="reloadPage()">Reset</a>
+                            <a href="{{route('admin.bethistory')}}" class="btn btn-secondary btn-sm" onclick="reloadPage()">Reset</a>
 
                         </div>
                     </div>
@@ -63,7 +62,6 @@
                                 @endforeach
                             </select>
                         </div>
-
                         <!-- User Section -->
                         <div class="col-sm-3 text-center ml-5">
                             <span class="me-2">&nbsp;&nbsp;&nbsp;User&nbsp;&nbsp;</span>
@@ -135,12 +133,10 @@
                  @endif
                 
                 @if($authrole != 3)
-                <div class="row">
-                    <div class="col-sm-3">
                         <form action="{{ route('admin.calculation') }}" method="GET">
-                            <div class="d-flex align-items-center">
-                                <!-- User Dropdown -->
-                                <div class=" d-flex align-items-center mt-2">
+                            <div class="row ml-2">
+                                <div class="col-sm-2">
+                                     <div class=" d-flex align-items-center mt-2">
                                     <select id="user-selectmenual" name="all_user_search_id"
                                         class="form-control select2" style="width:200px;">
                                         @foreach($users as $admin)
@@ -151,33 +147,29 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                 <input type="text" class="form-control">
-                                <!-- Buttons -->
-                                <div class="d-flex">
-                                    <button type="submit" class="btn btn-primary btn-sm">Search</button>
-                                    <!--<a href="" class="btn btn-secondary btn-sm">Reset</a>-->
                                 </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4 mt-2 ml-4">
-                            <form action="{{ route('admin.calculation') }}" method="GET" class="d-flex align-items-center">
-                                <div class="input-group-sm mb-3 d-flex">
-                                    <input type="date" name="start_date" class="form-control" required 
-                                           value="{{ request('start_date') }}">
-                                    <input type="date" name="end_date" class="form-control ml-2" required 
-                                           value="{{ request('end_date') }}">
-                                    <div class="d-flex">
-                                        <button class="btn btn-primary btn-sm" type="submit">Filter</button>
+                                
+                                <div class="col-sm-2 ml-5">
+                                        <select name="bet_status" id="status" class="form-control form-control-sm mt-2" >
+                                            <option value="">Status</option>
+                                            <option value="0">Pending</option>
+                                            <option value="1">Cancel</option>
+                                            <option value="2">Loss</option>
+                                            <option value="3">Unclaimed</option>
+                                            <option value="4">Claimed</option>
+                                        </select>
+                                </div>
+                                <div class="col-sm-3">
+                                   <div class="input-group-sm-6 d-flex">
+                                        <input type="date" name="start_date" class="form-control form-control-sm mt-2"
+                                               value="{{ request('start_date') }}">
+                                        <input type="date" name="end_date" class="form-control form-control-sm mt-2" 
+                                               value="{{ request('end_date') }}">
+                                        <button class="btn btn-primary btn-sm mt-2" type="submit">Search</button>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-                
+                            </div>
+                       </form>
                 @endif
             </div>
             

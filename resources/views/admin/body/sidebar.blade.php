@@ -66,13 +66,13 @@
                             <i class="fa fa-lock orange_color"></i> <span>Update Password</span>
                         </a>
                     </li>
-                     @if($role == 1)
+                    
                       <li class="active">
                           <a href="{{ route('user.pending',2) }}" aria-expanded="false">
                               <i class="fa fa-user yellow_color"></i> <span>Pending users</span>
                           </a>
                       </li>
-                     @endif
+                    
                       {{--
                     <li>
                         <a href="{{route('admin.addmoney')}}">
@@ -90,6 +90,11 @@
                         </a>
                     </li>
                     @endif
+                     <li>
+                        <a href="{{route('logout')}}">
+                            <i class="fa fa-sign-out orange_color"></i> <span>logout</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>

@@ -100,6 +100,8 @@ public function bethistory(Request $request) {
     $date = null;
     $start_date =null;
     $end_date=null;
+    $barcode=null;
+    $bet_status=null;
     if ($request->st_terminal_id) {
         $stokist = DB::table('admins')->where('terminal_id', $request->st_terminal_id)->first();
         $stokistid = $stokist->id;
@@ -119,20 +121,23 @@ public function bethistory(Request $request) {
         $selected_role_id = 4;
        
     }
-    if($request->date){
-        $date = $request->date;
-      //  dd($date);
-    }
     if($request->start_date && $request->end_date){
         $start_date = $request->start_date;
         $end_date = $request->end_date;
        
     }
+     if($request->barcode ){
+        $barcode = $request->barcode;
+       // dd($barcode);
+       
+    }
+    
 
   $bet_history = DB::table('bets')
         ->leftJoin('admins', 'bets.user_id', '=', 'admins.id')
         ->select(
             'bets.*',
+            'bets.barcode_number',
             'admins.role_id as admin_role_id',
             'admins.terminal_id as admin_terminal_id',
             'admins.status as admin_status',
@@ -160,19 +165,20 @@ public function bethistory(Request $request) {
       }elseif($selected_role_id==4){
            $bet_history = $bet_history->where('admins.id',$user_id);
       }
-     $bet_status = $request->bet_status??null;
-     if ($bet_status) {
-     $bet_history = $bet_history->where('bets.status', $request->bet_status);
-      }
-    if($date)
-    {
-     $bet_history = $bet_history->whereDate('bets.result_time','=', $date);
+      if(is_numeric($request->bet_status))
+        {
+          $bet_history = $bet_history->where('bets.status',$request->bet_status);
+        }
+
+      if($barcode){
+     $bet_history = $bet_history->where('bets.barcode_number',$barcode);
     }
     if($start_date && $end_date){
         $start_date = $start_date . ' 00:00:00';
         $end_date = $end_date . ' 23:59:59';
      $bet_history = $bet_history->whereBetween('bets.result_time', [$start_date, $end_date]);
     }
+   
     $perPage = $request->input('perPage', 150);
     $bet_history = $bet_history->orderBy('bets.id', 'desc')->paginate($perPage);
     // for the depend dropdown
@@ -204,6 +210,10 @@ public function bethistory(Request $request) {
         'authrole' => $authrole
     ]);
 }
+
+
+
+
      public function reset_bethistory(Request $request){
          	$request->session()->forget('result_time');
 		$request->session()->forget('barcode_number');
@@ -258,16 +268,16 @@ public function calculation(Request  $request){
         $admins = $admins->where('admins.inside_substockist', $authid);
     }
     $admins = $admins->orderBy('admins.id', 'desc')->get();
-    //Dependent dropdowns end code 
+                     //Dependent dropdowns end code 
                     //For request data who submited by blade tamplet end code 
                      $inside_stockist = null;
                      $inside_substockist = null;
                      $user_id = null;
                      $all_user_search_id = null;
                      $selected_role_id = null;
-                     $date = null;
                      $start_date =null;
                      $end_date=null;
+                     $bet_status=null;
                      
                          if ($request->st_terminal_id) {
                              $inside_stockist = DB::table('admins')->where('terminal_id', $request->st_terminal_id)->value('id');
@@ -284,14 +294,14 @@ public function calculation(Request  $request){
                           if($request->all_user_search_id){
                              $all_user_search_id = DB::table('admins')->where('terminal_id', $request->all_user_search_id)->value('id');
                          }
-                         if($request->date){
-                             $date = $request->date;
-                           //  dd($date);
-                         }
                          if($request->start_date && $request->end_date){
                              $start_date = $request->start_date;
                              $end_date = $request->end_date;
                          }
+                         
+                        //  if ($request->bet_status) {
+                        //  $bet_status = $request->bet_status;
+                        //  }
              // $query = DB::table('bets')
              
              $query = DB::table('bets')
@@ -320,7 +330,6 @@ public function calculation(Request  $request){
                      {
                          $results = $query->where('admins.inside_stockist', $authid);
                          $sumresults = $sum->where('admins.inside_stockist', $authid);
-                        
                      }
                      if($authrole ==3)
                      {
@@ -335,39 +344,40 @@ public function calculation(Request  $request){
                      if ($start_date && $end_date){
                          $start_date = $start_date . ' 00:00:00';
                          $end_date = $end_date . ' 23:59:59';
-                      $results = $query->whereBetween('bets.result_time', [$start_date, $end_date]);
-                      $sumresults = $sum->whereBetween('bets.result_time', [$start_date, $end_date]);
-                     }elseif($date){
-                          $results = $query->whereDate('bets.result_time','=', $date);
-                          $sumresults = $sum->whereDate('bets.result_time','=', $date);
-                     }else{
-                          $date = date('Y-m-d');
-                          $results = $query->whereDate('bets.result_time','=', $date);
-                          $sumresults = $sum->whereDate('bets.result_time','=', $date);
-                     }
-                         if($selected_role_id == 2) {
-                             $results = $query->where('admins.inside_stockist', $inside_stockist);
-                             $sumresults = $sum->where('admins.inside_stockist', $inside_stockist);
-                                //  ->where('admins.inside_substockist',null)
-                                  }elseif($selected_role_id == 3){
-                                     $results = $query->where('admins.inside_substockist', $inside_substockist);   
-                                     $sumresults = $sum->where('admins.inside_substockist', $inside_substockist);   
-                               }elseif($selected_role_id==4){
-                                  $results = $query->where('admins.id',$user_id);
-                                  $sumresults = $sum->where('admins.id',$user_id);
-                               }
-                         $results = $query->get();
-                         $sumresults = $sum->first();
-                        
-                      
-                          return view('admin.calculation')->with([
+                         $results = $query->whereBetween('bets.result_time', [$start_date, $end_date]);
+                         $sumresults = $sum->whereBetween('bets.result_time', [$start_date, $end_date]);
+                         }else{
+                         $date = date('Y-m-d');
+                         $results = $query->whereDate('bets.result_time','=', $date);
+                         $sumresults = $sum->whereDate('bets.result_time','=', $date);
+                         }
+                        if($selected_role_id == 2) {
+                            $results = $query->where('admins.inside_stockist', $inside_stockist);
+                            $sumresults = $sum->where('admins.inside_stockist', $inside_stockist);
+                           }
+                       elseif($selected_role_id == 3){
+                            $results = $query->where('admins.inside_substockist', $inside_substockist);   
+                            $sumresults = $sum->where('admins.inside_substockist', $inside_substockist);   
+                           }
+                       elseif($selected_role_id==4){
+                                 $results = $query->where('admins.id',$user_id);
+                                 $sumresults = $sum->where('admins.id',$user_id);
+                           }
+                           if(is_numeric($request->bet_status))
+                           {
+                                $results = $query->where('bets.status',$request->bet_status);
+                           }
+                          
+                        $results = $query->get();
+                        $sumresults = $sum->first();
+                        return view('admin.calculation')->with([
                               'authrole' => $authrole,
                               'users' => $admins,
                               'sumresults' => $sumresults,
                               'results' => $results
-                      ]);
+                            ]);
         
         
-}
+    }
 
 }

@@ -82,19 +82,18 @@
 
           </div>
           <div class="row" style="padding-bottom:20px;">
-                <div class="card col-md-1  mt-4 " style="height:90px;"><img src="{{env('APP_URL')}}images/1.png"></div>
-                <div class="card col-md-1  mt-4 " style="height:90px;"><img src="{{env('APP_URL')}}images/2.png"></div>
-                <div class="card col-md-1  mt-4 " style="height:90px;"><img src="{{env('APP_URL')}}images/3.png"></div>
-                <div class="card col-md-1  mt-4 " style="height:90px;"><img src="{{env('APP_URL')}}images/4.png"></div>
-                <div class="card col-md-1  mt-4 " style="height:90px;"><img src="{{env('APP_URL')}}images/5.png"></div>
-                <div class="card col-md-1  mt-4 " style="height:90px;"><img src="{{env('APP_URL')}}images/6.png"></div>
-                
-                <div class="card col-md-1  mt-4 " style="height:90px;"><img src="{{env('APP_URL')}}images/7.png"></div>
-                <div class="card col-md-1  mt-4 " style="height:90px;"><img src="{{env('APP_URL')}}images/8.png"></div>
-                <div class="card col-md-1  mt-4 " style="height:90px;"><img src="{{env('APP_URL')}}images/9.png"></div>
-                <div class="card col-md-1 mt-4 " style="height:90px;"><img src="{{env('APP_URL')}}images/10.png"></div>
-                <div class="card col-md-1  mt-4 " style="height:90px;"><img src="{{env('APP_URL')}}images/11.png"></div>
-                <div class="card col-md-1 mt-4 " style="height:90px;"><img src="{{env('APP_URL')}}images/12.png"></div>
+                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/1.png"></div>
+                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/2.png"></div>
+                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/3.png"></div>
+                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/4.png"></div>
+                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/5.png"></div>
+                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/6.png"></div>
+                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/7.png"></div>
+                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/8.png"></div>
+                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/9.png"></div>
+                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/10.png"></div>
+                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/11.png"></div>
+                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/12.png"></div>
           </div>
           <div class="row" style="  padding-bottom:20px;" id="amounts-container"></div>
            <div class="row" style="padding-bottom:20px;" id="winning-container"></div>

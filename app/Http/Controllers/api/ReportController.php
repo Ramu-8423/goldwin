@@ -60,10 +60,10 @@ class ReportController extends Controller
                  $opt_play_points = $net_play_points - $claimed_points;
                 
                  $discounted_points = 0;
-                 $gross_points = $opt_play_points +  $discounted_points;
+                 $gross_points = $opt_play_points -  $discounted_points;
                  $bonus_points = 0;
                  $gift_points = 0;
-                 $net_pay_points = $gross_points;
+                 $net_pay_points = $gross_points -$bonus_points-$gift_points;
                 }else{
                     $play_points = 0;
                     $cancel_points = 0;
@@ -90,8 +90,10 @@ class ReportController extends Controller
                }
                
                   $total_points = $open_points + $add_points;
-                  $used_points = $total_points - $current_points;
+                  $used_points = $net_pay_points<0?0:$net_pay_points;
                   
+                  
+                  $current_points = $total_points - $net_pay_points;
                 
              
             $report = [

@@ -134,6 +134,7 @@ class CroneController extends Controller
         $bet_his = DB::table('bets')
             ->where('result_time', '>', $min_time)
             ->where('result_time', '<=', $resultAnnouncementTime)
+            ->where('status','!=',1)
             ->get();
             
           //  dd($bet_his);
@@ -142,7 +143,7 @@ class CroneController extends Controller
         foreach($bet_his as $item){
             $id = $item->id;
             $bet_detail = json_decode($item->bet_details);
-            
+        
           foreach($bet_detail as $value){
              $card_points = $value->points;
              $bet_card_number = $value->card_number;
@@ -155,8 +156,8 @@ class CroneController extends Controller
             }else{
                 $update_bet = DB::table('bets')->where('id',$id)->update(['status'=>2]);
             }
-            
           }
+            
         }
       }
        $update_bet_logs =  DB::table('bet_logs')->update(['amount'=>0]);

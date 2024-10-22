@@ -3,69 +3,11 @@
 <div class="col-md-12 margin_top_30">
     <div class="white_shd full margin_bottom_30">
         <div class="full graph_head">
-            <div class="heading1 margin_0">
-                <div class="row">
-                    @if($authrole != 3)
-                    <div class="col-sm-3">
-                        <form action="{{ route('admin.bethistory') }}" method="GET"
-                            class="d-flex align-items-center ml-auto">
-                            <select name="use_terminal_id" id="uniqueTerminalSelect"
-                                class="form-control custom-select-terminal" style="width: 160px; margin-top: 5px;">
-                                <option value="" disabled selected>Select terminal</option> <!-- Default option -->
-                                @foreach($users as $admin)
-                                @if($admin->adminrole_id == 4)
-                                <option value="{{ $admin->terminal_id }}">
-                                    {{ $admin->terminal_id }}
-                                </option>
-                                @endif
-                                @endforeach
-                            </select>
-                            <button id="uniqueSubmitButton" class="btn btn-primary btn-sm ml-2 custom-button"
-                                style="margin-top: -5px;">search</button> <!-- Keep button unchanged -->
-                        </form>
-                    </div>
-                    <div class="col-sm-4">
-                        <form action="{{ route('admin.bethistory') }}" method="GET"
-                            class="d-flex align-items-center ml-5">
-                            <div class="input-group-sm mb-3 d-flex">
-                                <input type="date" name="date" class="form-control" required>
-                                <div class="d-flex">
-                                    <button class="btn btn-primary btn-sm" type="submit">Filter</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-sm-4">
-                        <form action="{{ route('admin.bethistory') }}" method="GET" class="d-flex align-items-center">
-                            <div class="input-group-sm mb-3 d-flex">
-                                <input type="date" name="start_date" class="form-control" required>
-                                <input type="date" name="end_date" class="form-control ml-2" required>
-                                <div class="d-flex">
-                                    <button class="btn btn-primary btn-sm" type="submit">Filter</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    @endif
-
-                </div>
-                @if($authrole == 1)
+        <div class="container-fluid">
+               @if($authrole == 1)
                 <form action="{{ route('admin.bethistory') }}" method="GET">
-                    <div class="row d-flex">
-                        <div class="col-sm-2 text-center ml-1">
-                            <span class="me-2">All Status</span>
-                            <select name="bet_status" id="status" class="form-control form-control-sm  ml-2">
-                                <option value="">All History</option>
-                                <option value="0">Pending</option>
-                                <option value="1">Cancel</option>
-                                <option value="2">Loss</option>
-                                <option value="3">Unclaimed</option>
-                                <option value="4">Claimed</option>
-                            </select>
-                            </select>
-                        </div>
-                        <!-- Stokist Section -->
-                        <div class="col-sm-3 text-center ml-1">
+                   <div class="row justify-content-center">
+                        <div class="col-sm-3 col-sm-3 text-center">
                             <span class="me-2">&nbsp;&nbsp;Stokist&nbsp;&nbsp;</span>
                             <select id="stockist-select" name="st_terminal_id" class="form-control select2 me-2"
                                 style="width: auto;">
@@ -79,41 +21,36 @@
                                 @endforeach
                             </select>
                         </div>
-                        <!-- Substockist Section -->
-                        <div class="col-sm-3 text-center ml-1">
-                            <span class="me-2">Sustokist</span>
+                        <div class="col-sm-3 col-sm-3 text-center">
+                              <span class="me-2">Sustokist</span>
                             <select id="substockist-select" name="sub_terminal_id" class="form-control select2 me-2"
                                 style="width: auto;">
                                 <option value="">All Sustokist Terminal</option>
                                 <!-- Populate substockist options as needed -->
                             </select>
                         </div>
-                        <!-- User Section -->
-                        <div class="col-sm-2 text-center ml-1">
-                            <span class="me-2">User</span>
+                        <div class="col-sm-3 text-center mb-3">
+                            <span class="me-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                             <select id="user-select" name="use_terminal_id" class="form-control select2 me-2"
                                 style="width: auto;">
                                 <option value=""> User Terminal</option>
                                 <!-- Populate user options as needed -->
                             </select>
                         </div>
+                        <!-- Buttons Section -->
+                        <div class="col-sm-3 d-flex align-items-center justify-content-center mb-3">
+                            <button type="submit" class="btn btn-primary btn-sm mr-2">Search</button>
+                            <a href="{{route('admin.bethistory')}}" class="btn btn-secondary btn-sm" onclick="reloadPage()">Reset</a>
 
-                        <div class="col-sm-1 ml-2">
-                            <div class="d-flex">
-                                <button type="submit" class="btn btn-primary btn-sm mt-4">Search</button>
-                                <a href="{{route('admin.bethistory')}}"><button
-                                        class="btn btn-secondary  btn-sm mt-4  ml-1">Reset</button></a>
-                            </div>
                         </div>
                     </div>
-            </div>
-            </form>
-            @elseif($authrole == 2)
-            <form action="{{ route('admin.bethistory') }}" method="GET">
-                <div class="row d-flex">
-                    <!-- Substockist Section -->
-                    <div class="col-sm-3 text-center ml-1">
-                        <span class="me-2">Substokist</span>
+                </form>
+               @endif
+              @if($authrole == 2)
+               <form action="{{ route('admin.bethistory') }}" method="GET">
+                   <div class="row justify-content-center">
+                        <div class="col-sm-3 col-sm-3 text-center">
+                            <span class="me-2">Substokist</span>
                         <select id="substockist-select" name="sub_terminal_id" class="form-control select2 me-2"
                             style="width: auto;">
                             <option value="">All Substokist Terminal</option>
@@ -123,9 +60,8 @@
                             @endif
                             @endforeach
                         </select>
-                    </div>
-                    <!-- User Section -->
-                    <div class="col-sm-3 text-center ml-5">
+                        </div>
+                        <div class="col-sm-3 text-center ml-5">
                         <span class="me-2">&nbsp;&nbsp;User&nbsp;&nbsp;&nbsp;</span>
                         <select id="user-select" name="use_terminal_id" class="form-control select2 me-2"
                             style="width: auto;">
@@ -140,14 +76,14 @@
                                     class="btn btn-secondary  btn-sm mt-4  ml-1">Reset</button>
                         </div></a>
                     </div>
-                </div>
-            </form>
-            @elseif($authrole == 3)
-            <div class="row d-flex align-items-center">
-                <!-- User Dropdown Form -->
-                <div class="col-sm-3">
-                    <form action="{{ route('admin.bethistory') }}" method="GET">
-                        <div class="d-flex align-items-center">
+                    </div>
+                </form>
+              @endif
+               @if($authrole == 3)
+               <form action="{{ route('admin.bethistory') }}" method="GET">
+                   <div class="row justify-content-center">
+                        <div class="col-sm-2 text-center">
+                            <div class="d-flex align-items-center">
                             <select id="user-select" name="use_terminal_id" class="form-control select2"
                                 style="width: 150px;">
                                 <option value="" disabled selected>Select a terminal</option>
@@ -157,39 +93,83 @@
                                 @endif
                                 @endforeach
                             </select>
-                            <button type="submit" class="btn btn-primary btn-sm ml-2">Search</button>
+                            
+                        </div>
+                        </div>
+                        <div class="col-sm-2">
+                           <input type="text" id="barcode-input" name="barcode" placeholder="Enter barcode" 
+                            class="form-control form-control-sm" style="width:150px;" 
+                            value="{{ old('barcode', request('barcode')) }}" 
+                            pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        </div>
+                        <div class="col-sm-2">
+                          <select name="bet_status" id="status" class="form-control form-control-sm  ml-2">
+                                <option value="">All History</option>
+                                <option value="0">Pending</option>
+                                <option value="1">Cancel</option>
+                                <option value="2">Loss</option>
+                                <option value="3">Unclaimed</option>
+                                <option value="4">Claimed</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4 text-center">
+                           <div class="input-group-sm mb-3 d-flex">
+                                 <input type="date" name="start_date" class="form-control" value="{{ request()->get('start_date') }}">
+                                 <input type="date" name="end_date" class="form-control ml-2" value="{{ request()->get('end_date') }}">
+                            <div class="d-flex">
+                                <button type="submit" class="btn btn-primary btn-sm ml-2">Search</button>
                             <a href="{{ route('admin.bethistory') }}" class="btn btn-secondary btn-sm ml-1">Reset</a>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-sm-1"></div>
-                <!-- Date Filter Form -->
-                <div class="col-sm-4">
-                    <form action="{{ route('admin.bethistory') }}" method="GET" class="d-flex align-items-center ml-3">
-                        <div class="input-group-sm mb-3 d-flex">
-                            <input type="date" name="date" class="form-control" required>
-                            <div class="d-flex">
-                                <button class="btn btn-primary btn-sm" type="submit">Filter</button>
                             </div>
                         </div>
-                    </form>
-                </div>
-
-                <!-- Date Range Filter Form -->
-                <div class="col-sm-3">
-                    <form action="{{ route('admin.bethistory') }}" method="GET" class="d-flex align-items-center">
-                        <div class="input-group-sm mb-3 d-flex">
-                            <input type="date" name="start_date" class="form-control" required>
-                            <input type="date" name="end_date" class="form-control ml-2" required>
-                            <div class="d-flex">
-                                <button class="btn btn-primary btn-sm" type="submit">Filter</button>
-                            </div>
                         </div>
-                    </form>
-                </div>
-            </div>
+                    </div>
+                </form>
+              @endif
+              @if($authrole != 3)
+               <form action="{{ route('admin.bethistory') }}" method="GET">
+                   <div class="row">
+                  <div class="col-sm-3">
+                        <select name="use_terminal_id" id="uniqueTerminalSelect"
+                                class="form-control custom-select-terminal" style="width: 160px; margin-top: 5px;">
+                                <option value="" disabled selected>Select terminal</option> <!-- Default option -->
+                                @foreach($users as $admin)
+                                @if($admin->adminrole_id == 4)
+                                <option value="{{ $admin->terminal_id }}">
+                                    {{ $admin->terminal_id }}
+                                </option>
+                                @endif
+                                @endforeach
+                            </select>
+                  </div>
+                  <div class="col-sm-2">
+                         <input type="text" id="barcode-input" name="barcode" placeholder="Enter barcode" 
+                            class="form-control form-control-sm" style="width:150px;" 
+                            value="{{ old('barcode', request('barcode')) }}" 
+                            pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                  </div>
+                  <div class="col-sm-2">
+                          
+                            <select name="bet_status" id="status" class="form-control form-control-sm  ml-2">
+                                <option value="">All History</option>
+                                <option value="0">Pending</option>
+                                <option value="1">Cancel</option>
+                                <option value="2">Loss</option>
+                                <option value="3">Unclaimed</option>
+                                <option value="4">Claimed</option>
+                            </select>
+                  </div>
 
-            @endif
+                  <div class="input-group-sm mb-3 d-flex">
+                                 <input type="date" name="start_date" class="form-control" value="{{ request()->get('start_date') }}">
+                                 <input type="date" name="end_date" class="form-control ml-2" value="{{ request()->get('end_date') }}">
+                                <div class="d-flex">
+                                <button class="btn btn-primary btn-sm" type="submit">Search</button>
+                        </div>
+                     </div>
+                  </div>
+              </div>
+                </form>
+              @endif
         </div>
     </div>
     <div class="table_section padding_infor_info">
@@ -272,9 +252,7 @@
                     </tr>
                     @endforeach
                 </tbody>
-
             </table>
-
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
                     <li class="page-item {{ $results->onFirstPage() ? 'disabled' : '' }}">
