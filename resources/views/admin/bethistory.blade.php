@@ -8,7 +8,7 @@
                 <form action="{{ route('admin.bethistory') }}" method="GET">
                    <div class="row justify-content-center">
                         <div class="col-sm-3 col-sm-3 text-center">
-                            <span class="me-2">&nbsp;&nbsp;Stokist&nbsp;&nbsp;</span>
+                            <h6 class="me-2">&nbsp;&nbsp;Stokist&nbsp;&nbsp;</h6>
                             <select id="stockist-select" name="st_terminal_id" class="form-control select2 me-2"
                                 style="width: auto;">
                                 <option value="">All Stokist Terminal</option>
@@ -22,7 +22,7 @@
                             </select>
                         </div>
                         <div class="col-sm-3 col-sm-3 text-center">
-                              <span class="me-2">Sustokist</span>
+                              <h6 class="me-2">Sustokist</h6>
                             <select id="substockist-select" name="sub_terminal_id" class="form-control select2 me-2"
                                 style="width: auto;">
                                 <option value="">All Sustokist Terminal</option>
@@ -30,7 +30,7 @@
                             </select>
                         </div>
                         <div class="col-sm-3 text-center mb-3">
-                            <span class="me-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <h6 class="me-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h6>
                             <select id="user-select" name="use_terminal_id" class="form-control select2 me-2"
                                 style="width: auto;">
                                 <option value=""> User Terminal</option>
@@ -48,10 +48,10 @@
                @endif
               @if($authrole == 2)
                <form action="{{ route('admin.bethistory') }}" method="GET">
-                   <div class="row justify-content-center">
+                   <div class="row justify-content-center mb-5">
                         <div class="col-sm-3 col-sm-3 text-center">
-                            <span class="me-2">Substokist</span>
-                        <select id="substockist-select" name="sub_terminal_id" class="form-control select2 me-2"
+                            <h6 class="me-2">Substokist</h6>
+                          <select id="substockist-select" name="sub_terminal_id" class="form-control select2 me-2"
                             style="width: auto;">
                             <option value="">All Substokist Terminal</option>
                             @foreach($users as $admin)
@@ -62,10 +62,10 @@
                         </select>
                         </div>
                         <div class="col-sm-3 text-center ml-5">
-                        <span class="me-2">&nbsp;&nbsp;User&nbsp;&nbsp;&nbsp;</span>
+                        <h6 class="me-2">&nbsp;&nbsp;User&nbsp;&nbsp;&nbsp;</h6>
                         <select id="user-select" name="use_terminal_id" class="form-control select2 me-2"
                             style="width: auto;">
-                            <option value="">All User Terminal</option>
+                             <option value="">All User Terminal</option>
                             <!-- User options will be populated here -->
                         </select>
                     </div>
@@ -81,8 +81,8 @@
               @endif
                @if($authrole == 3)
                <form action="{{ route('admin.bethistory') }}" method="GET">
-                   <div class="row justify-content-center">
-                        <div class="col-sm-2 text-center">
+                   <div class="row justify-content-center mt-5">
+                        <div class="col-sm-2  mb-3 text-center">
                             <div class="d-flex align-items-center">
                             <select id="user-select" name="use_terminal_id" class="form-control select2"
                                 style="width: 150px;">
@@ -96,28 +96,28 @@
                             
                         </div>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-sm-2  mb-3">
                            <input type="text" id="barcode-input" name="barcode" placeholder="Enter barcode" 
                             class="form-control form-control-sm" style="width:150px;" 
                             value="{{ old('barcode', request('barcode')) }}" 
                             pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         </div>
-                        <div class="col-sm-2">
-                          <select name="bet_status" id="status" class="form-control form-control-sm  ml-2">
+                        <div class="col-sm-2  mb-3">
+                          <select name="bet_status" id="status" class="form-control form-control-sm ml-1">
                                 <option value="">All History</option>
-                                <option value="0">Pending</option>
-                                <option value="1">Cancel</option>
-                                <option value="2">Loss</option>
-                                <option value="3">Unclaimed</option>
-                                <option value="4">Claimed</option>
+                                <option value="0" {{ request('bet_status') == '0' ? 'selected' : '' }}>Pending</option>
+                                <option value="1" {{ request('bet_status') == '1' ? 'selected' : '' }}>Cancel</option>
+                                <option value="2" {{ request('bet_status') == '2' ? 'selected' : '' }}>Loss</option>
+                                <option value="3" {{ request('bet_status') == '3' ? 'selected' : '' }}>Unclaimed</option>
+                                <option value="4" {{ request('bet_status') == '4' ? 'selected' : '' }}>Claimed</option>
                             </select>
                         </div>
-                        <div class="col-sm-4 text-center">
-                           <div class="input-group-sm mb-3 d-flex">
+                        <div class="col-sm-4  mb-3 text-center">
+                           <div class="input-group-sm d-flex">
                                  <input type="date" name="start_date" class="form-control" value="{{ request()->get('start_date') }}">
                                  <input type="date" name="end_date" class="form-control ml-2" value="{{ request()->get('end_date') }}">
                             <div class="d-flex">
-                                <button type="submit" class="btn btn-primary btn-sm ml-2">Search</button>
+                                <button type="submit" class="btn btn-primary btn-sm ">Search</button>
                             <a href="{{ route('admin.bethistory') }}" class="btn btn-secondary btn-sm ml-1">Reset</a>
                             </div>
                         </div>
@@ -128,7 +128,7 @@
               @if($authrole != 3)
                <form action="{{ route('admin.bethistory') }}" method="GET">
                    <div class="row">
-                  <div class="col-sm-3">
+                  <div class="col-sm-3 mb-2">
                         <select name="use_terminal_id" id="uniqueTerminalSelect"
                                 class="form-control custom-select-terminal" style="width: 160px; margin-top: 5px;">
                                 <option value="" disabled selected>Select terminal</option> <!-- Default option -->
@@ -141,25 +141,24 @@
                                 @endforeach
                             </select>
                   </div>
-                  <div class="col-sm-2">
+                  <div class="col-sm-2 mb-2">
                          <input type="text" id="barcode-input" name="barcode" placeholder="Enter barcode" 
                             class="form-control form-control-sm" style="width:150px;" 
                             value="{{ old('barcode', request('barcode')) }}" 
                             pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                   </div>
-                  <div class="col-sm-2">
+                  <div class="col-sm-2 mb-2">
                           
                             <select name="bet_status" id="status" class="form-control form-control-sm  ml-2">
                                 <option value="">All History</option>
-                                <option value="0">Pending</option>
-                                <option value="1">Cancel</option>
-                                <option value="2">Loss</option>
-                                <option value="3">Unclaimed</option>
-                                <option value="4">Claimed</option>
+                                <option value="0" {{ request('bet_status') == '0' ? 'selected' : '' }}>Pending</option>
+                                <option value="1" {{ request('bet_status') == '1' ? 'selected' : '' }}>Cancel</option>
+                                <option value="2" {{ request('bet_status') == '2' ? 'selected' : '' }}>Loss</option>
+                                <option value="3" {{ request('bet_status') == '3' ? 'selected' : '' }}>Unclaimed</option>
+                                <option value="4" {{ request('bet_status') == '4' ? 'selected' : '' }}>Claimed</option>
                             </select>
                   </div>
-
-                  <div class="input-group-sm mb-3 d-flex">
+                               <div class="input-group-sm mb-3 d-flex ">
                                  <input type="date" name="start_date" class="form-control" value="{{ request()->get('start_date') }}">
                                  <input type="date" name="end_date" class="form-control ml-2" value="{{ request()->get('end_date') }}">
                                 <div class="d-flex">
@@ -391,7 +390,7 @@ $(document).ready(function() {
 <script>
 $(document).ready(function() {
     $('#uniqueTerminalSelect').select2({
-        placeholder: "Select All",
+        placeholder: "Search all user ",
         allowClear: true
     });
 });

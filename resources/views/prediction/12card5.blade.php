@@ -1,17 +1,18 @@
 @extends('admin.body.adminmaster')
 @section('content')
 
+
      <div class="container-fluid mt-5">
           
                <div class="row" style="backgorund-color: #fff; border-radius: 5px;margin-bottom:10px; ">
-                     <div class="col-md-3 ">
+                     <div class="col-sm-3 ">
                         <b class="city" style="font-weight:bold;font-size:15px;">Result Announcement Time -</b>
                     </div>
-                     <div class="col-md-3">
+                     <div class="col-sm-3">
                          <h4 id="result_announce_time"></h4>
                      </div>
-                   <div class="col-md-3"></div>
-                    <div class="col-md-3">
+                   <div class="col-sm-3"></div>
+                    <div class="col-sm-3">
                         <h4 id="timer"></h4>
                     </div>
                </div>
@@ -29,10 +30,10 @@
             </select>
         </div>
         
-        <div class="col-md-1">
+        <div class="col-sm-1">
             <h5 class="city">Result</h5>
         </div>
-        <div class="col-md-2">
+        <div class="col-sm-2">
             <select id="result-type" class="form-control" name="result">
                 <option value="1" {{$game_settings->result_type==1?'selected':''}}>Manual</option>
                 <option value="2" {{$game_settings->result_type==2?'selected':''}}>Lucky Draw</option>
@@ -40,10 +41,10 @@
             </select>
         </div>
 
-        <div class="col-md-1">
+        <div class="col-sm-1">
             <h5 class="city">Win %</h5>
         </div>
-        <div class="col-md-1">
+        <div class="col-sm-1">
             <select id="winning-percentage" name="percentage">
                 <option value="25" {{$game_settings->winning_per==25?'selected':''}}>25-50</option>
                 <option value="50" {{$game_settings->winning_per==50?'selected':''}}>50-75</option>
@@ -52,60 +53,147 @@
             </select>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-sm-2">
             <h5 class="city">Site Msg</h5>
         </div>
-        <div class="col-md-2">
+        <div class="col-sm-2">
             <textarea id="textarea_id" rows="2" cols="20" name="site_message" placeholder="site msg">{{$game_settings->site_message}}</textarea>
         </div>
 
-        <div class="col-md-1">
+        <div class="col-sm-1">
             <button type="submit" name="submit" class="btn btn-primary">Submit</button>
         </div>
     </div>
 </form>
 
-                           
 
 
-      
-      
-      
-      
-          
-          <div class="row" style="padding-top: 2px;">
-            @for($i = 1; $i <= 12; $i++)
-                <div class="card col-md-1 mt-4" style="height:50px;">
-                    <h1>{{ $i }}</h1>
+<div class="card p-2 mt-5">
+    <div class="table-responsive mt-5 ">
+        <table class="table table-bordered" style="width: 100%; text-align: center;">
+            <thead>
+                <tr>
+                    <th>Card</th>
+                    <th class="mt-2">jack</th>
+                    <th class="mt-2">Queen</th>
+                    <th class="mt-2">king</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="h1">&#9827;</span><span class=" d-block">Clubs</span></td>
+                    <td class="bg-danger-hover" onclick="point_details(1)">
+                        <div style="position: relative;">
+                            <span style="position: absolute; top: 0; left: 0; font-weight: bold; color:red;">1</span>
+                            <h5 class="p-3" id="jc"></h5>
+                        </div>
+                    </td>
+                    <td class="bg-danger-hover" onclick="point_details(5)">
+                        <div style="position: relative;">
+                            <span style="position: absolute; top: 0; left: 0; font-weight: bold; color:red;">5</span>
+                            <h5 class="p-3" id="qc"></h5>
+                        </div>
+                    </td>
+                    <td class="bg-danger-hover" onclick="point_details(9)">
+                        <div style="position: relative;">
+                            <span style="position: absolute; top: 0; left: 0; font-weight: bold; color:red;">9</span>
+                            <h5 class="p-3" id="kc"></h5>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="h1 text-danger">&#9830;</span><span class=" d-block">Diamonds</span></td>
+                    <td class="bg-danger-hover" onclick="point_details(2)">
+                        <div style="position: relative;">
+                            <span style="position: absolute; top: 0; left: 0; font-weight: bold; color:red;">2</span>
+                            <h5 class="p-3" id="jd"></h5>
+                        </div>
+                    </td>
+                    <td class="bg-danger-hover" onclick="point_details(6)">
+                        <div style="position: relative;">
+                            <span style="position: absolute; top: 0; left: 0; font-weight: bold; color:red;">6</span>
+                            <h5 class="p-3" id="qd"></h5>
+                        </div>
+                    </td>
+                    <td class="bg-danger-hover" onclick="point_details(10)">
+                        <div style="position: relative;">
+                            <span style="position: absolute; top: 0; left: 0; font-weight: bold; color:red;">10</span>
+                            <h5 class="p-3" id="kd"></h5>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="h1">&#9824;</span><span class=" d-block">Spades</span></td>
+                    <td class="bg-danger-hover" onclick="point_details(3)">
+                        <div style="position: relative;">
+                            <span style="position: absolute; top: 0; left: 0; font-weight: bold; color:red;">3</span>
+                            <h5 class="p-3" id="js"></h5>
+                        </div>
+                    </td>
+                    <td class="bg-danger-hover" onclick="point_details(7)">
+                        <div style="position: relative;">
+                            <span style="position: absolute; top: 0; left: 0; font-weight: bold; color:red;">7</span>
+                            <h5 class="p-3" id="qs"></h5>
+                        </div>
+                    </td>
+                    <td class="bg-danger-hover" onclick="point_details(11)">
+                        <div style="position: relative;">
+                            <span style="position: absolute; top: 0; left: 0; font-weight: bold; color:red;">11</span>
+                            <h5 class="p-3" id="ks"></h5>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="h1 text-danger">&#9829;</span><span class=" d-block">Hearts</span></td>
+                    <td class="bg-danger-hover" onclick="point_details(4)">
+                        <div style="position: relative;">
+                            <span style="position: absolute; top: 0; left: 0; font-weight: bold; color:red;">4</span>
+                            <h5 class="p-3" id="jh"></h5>
+                        </div>
+                    </td>
+                    <td class="bg-danger-hover" onclick="point_details(8)">
+                        <div style="position: relative;">
+                            <span style="position: absolute; top: 0; left: 0; font-weight: bold; color:red;">8</span>
+                            <h5 class="p-3" id="qh"></h5>
+                        </div>
+                    </td>
+                    <td class="bg-danger-hover">
+                        <div style="position: relative;" onclick="point_details(12)">
+                            <span style="position: absolute; top: 0; left: 0; font-weight: bold; color:red;">12</span>
+                            <h5 class="p-3" id="kh"></h5>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+  
+ <div class="card mt-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-7">
+                <div style="">
+                    <div style="font-size:15 px; font-weight: bold;">Total Purchase Points: <span style="font-size:15 px; font-weight: bold;  margin-top: 10px; margin-left:20px;" id="toatlPurchaseTicket"></span></div>
+                    <div style="font-size:15 px; font-weight: bold; margin-top: 10px;">Auto Win Points:<span style="font-size:15 px; font-weight: bold;  margin-left:20px;" id="maxSystemWinning"></span></div>
                 </div>
-            @endfor
+            </div>
+            <div class="col-sm-5 mt-3">
+                <select name="users_id" id="users-akash" class="form-control select2"
+                    style="border:2px solid black;color:black;font-weight:400;width:70%;height:40px">
+                    <option value="">Select User</option>
+                    @foreach($users as $user_value)
+                    <option value="{{$user_value->id}}">{{$user_value->terminal_id}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
 
-          </div>
-          <div class="row" style="padding-bottom:20px;">
-                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/1.png"></div>
-                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/2.png"></div>
-                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/3.png"></div>
-                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/4.png"></div>
-                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/5.png"></div>
-                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/6.png"></div>
-                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/7.png"></div>
-                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/8.png"></div>
-                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/9.png"></div>
-                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/10.png"></div>
-                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/11.png"></div>
-                <div class="card col-md-1 col-sm-1 mt-4 " style="height:8wh; width:7.5wh"><img src="{{env('APP_URL')}}images/12.png"></div>
-          </div>
-          <div class="row" style="  padding-bottom:20px;" id="amounts-container"></div>
-           <div class="row" style="padding-bottom:20px;" id="winning-container"></div>
-           <div class="row d-flex justify-content-center align-items-center" style="padding-bottom:20px;background-color:white;">
-               <div class="col-md-2" style="border:1px solid blue;color:black;font-weight:400;width:100%;height:40px">Total Purchase Points - </div>
-                <div class="col-md-2" style="border:1px solid blue;color:black;font-weight:400;width:100%;height:40px" id="toatlPurchaseTicket"></div>
-                <div class="col-md-3" style="border:1px solid blue;color:black;font-weight:400;width:100%;height:40px">System max winning points - </div>
-                <div class="col-md-2" style="border:1px solid blue;color:black;font-weight:400;width:100%;height:40px" id="maxSystemWinning"></div>
-                <div class="col-md-3"></div>
-           </div>
-               
-          <form action="{{route('admin_prediction')}}" method="post">
+    </div>
+</div>
+</div>
+  
+          <form action="{{route('admin_prediction')}}" method="post" class="mt-4">
             @csrf
                <!--important input box hidden for prediction insert and also works for custom date selection-->
              <input type="hidden" class="form-control" id="result_time" style="  font-size: 16px;color:#333;border:none" name="result_time" value="">
@@ -148,54 +236,31 @@
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        <!--<tr>-->
-                        <!--<td>cmd</td>-->
-                        <!--<td>mnsm</td>-->
-                        <!--<td>emn x</td>-->
-                        <!--<td>mn x</td>-->
-                        <!--<td>nmsc x</td>-->
-                        <!--<td>jcd </td>-->
-                        <!--<td>skjnx</td>-->
-                        <!-- <td>cmd</td>-->
-                        <!--<td>mnsm</td>-->
-                        <!--<td>emn x</td>-->
-                        <!--<td>mn x</td>-->
-                        <!--<td>nmsc x</td>-->
-                        <!--<td>jcd </td>-->
-                        <!--<td>skjnx</td>-->
-                        <!--</tr>-->
                      </tbody>
               </table>
            </div>
            
            
-           
-           
-  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+          
+
+  <!--<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>-->
 <script>
-    // function fetchData() {
-    //     fetch('api/fetch')
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             console.log('Fetched data:', data);
-    //             if (data && data.bet_log) {
-    //                 updateBets(data.bet_log,data.result_time); //calling updateBets function to update amount in div
-    //             } else {
-    //                 console.error('Data format is incorrect or bet_log is missing:', data);
-    //             }
-    //         })
-    //         .catch(error => console.error('Error fetching data:', error));
-    // }
+            function refreshData() {
+                fetchData();
+                setInterval(fetchData, 3000); // Refresh every 3 seconds
+            }
     
         function fetchData() {
             const dateTimeValue = document.getElementById('custom_result_date_time').value; // Get the value from the input
+            const userId = document.getElementById('users-akash').value; // Get the value from the input
              console.log(`custom datetime value is - ${dateTimeValue}`);
+             console.log(`users id is - ${userId}`);
             fetch('api/fetch', {
                 method: 'POST', // Change to POST
                 headers: {
                     'Content-Type': 'application/json', // Set the content type
                 },
-                body: JSON.stringify({ custom_date_time: dateTimeValue }) // Include the parameter in the body
+                body: JSON.stringify({ custom_date_time: dateTimeValue,user_id:userId}) // Include the parameter in the body
             })
             .then(response => response.json())
             .then(data => {
@@ -208,28 +273,24 @@
             })
             .catch(error => console.error('Error fetching data:', error));
        }
-
     function updateBets(bet_log,result_time,total_purchase_point,system_winning) {
         console.log('Updating Bets:', bet_log);
         var amountdetailHTML = '';
         var winningdetailHTML = '';
-        // var result_time = '<h1>Result Time - '+ result_time + '</h1>';
+    
+        document.getElementById('jc').textContent = bet_log[0].amount;
+        document.getElementById('jd').textContent = bet_log[1].amount;
+        document.getElementById('js').textContent = bet_log[2].amount;
+        document.getElementById('jh').textContent = bet_log[3].amount;
+        document.getElementById('qc').textContent = bet_log[4].amount;
+        document.getElementById('qd').textContent = bet_log[5].amount;
+        document.getElementById('qs').textContent = bet_log[6].amount;
+        document.getElementById('qh').textContent = bet_log[7].amount;
+        document.getElementById('kc').textContent = bet_log[8].amount;
+        document.getElementById('kd').textContent = bet_log[9].amount;
+        document.getElementById('ks').textContent = bet_log[10].amount;
+        document.getElementById('kh').textContent = bet_log[11].amount;
        
-       bet_log.forEach((item, index) => {
-                amountdetailHTML += '<div class="card col-md-1 mt-4" style="background-color:#fff;color:black;font-weight:400;">';
-                amountdetailHTML += '<div class="card-body" onclick="point_details(' + (index + 1) + ')">';
-                amountdetailHTML += '<b style="color:black">' + item.amount + '</b>';
-                amountdetailHTML += '</div>';
-                amountdetailHTML += '</div>';
-                
-                winningdetailHTML += '<div class="card col-md-1 mt-4" style="background-color:#fff;color:black;font-weight:400;">';
-                winningdetailHTML += '<div class="card-body" onclick="point_details(' + (index + 1) + ')">';
-                winningdetailHTML += '<b style="color:black">' + (item.amount/5)*50 + '</b>';
-                winningdetailHTML += '</div>';
-                winningdetailHTML += '</div>';
-                
-            });
-
 
         $('#amounts-container').html(amountdetailHTML);
         $('#winning-container').html(winningdetailHTML);
@@ -237,11 +298,6 @@
         document.getElementById('result_announce_time').textContent = result_time;
         document.getElementById('toatlPurchaseTicket').textContent = total_purchase_point;
         document.getElementById('maxSystemWinning').textContent = system_winning;
-    }
-
-    function refreshData() {
-        fetchData();
-        setInterval(fetchData, 3000); // Refresh every 3 seconds
     }
     
     function point_details(card_number){
@@ -326,7 +382,13 @@ function updatePointsDetailsError() {
         refreshData();
         updateClock();
         setInterval(updateClock, 1000); // Update clock every second
+        
+        $('#users-akash').select2({
+        placeholder: "All User Terminals",
+        allowClear: true
     });
+    });
+    
 </script>
 <script type="text/javascript">    
    // setInterval(page_refresh, 300000); // Refresh page every 1 minute
@@ -348,8 +410,5 @@ function updatePointsDetailsError() {
     window.onload = toggleFields;
 </script>
 
-
-
-
-     </div>
+</div>
 @endsection('content')

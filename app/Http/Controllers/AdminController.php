@@ -53,47 +53,106 @@ class AdminController extends Controller
     
     
       public function game_setting(Request $req){
-        // $site_message = $req->site_message;
-        // $percentage = $req->percentage;
-        $result = $req->result??3;
-        // $status = $req->status;
-        // $a =   DB::table('game_settings')->where('id',1)->update([
-        //   'site_message'=>$site_message,
-        //   'winning_per'=>$percentage,
-        //   'result_type'=>$result,
-        //   'status'=>$status,
-        //   ]);
-           
+         $site_message = $req->site_message;
+         $percentage = $req->percentage;
+         $result = $req->result;
+         $status = $req->status;
+         $a =   DB::table('game_settings')->where('id',1)->update([
+                              'site_message'=>$site_message,
+                              'winning_per'=>$percentage,
+                              'result_type'=>$result,
+                              'status'=>$status,
+                           ]);
            
           if($result==3){
-              // jb result auto kiya jaye tb pichhle pending result ko card number allocate ho jaye aur us result time pr jo bet lga ho usko winning card number ke according uslka result decleareed ho jaye
-              // result table se sbhi record leke aaye jha result null ho
-              // ab hr ek result ki time nikal kr us time se lge bet leke aaye bets table se 
-              // ek empty array lekr usme sbhi card ki bet ko corresponding card pr rkh de .
-              //  ab us card me winning percentage ki logic ke hissan se bet ki status change krvana hai aur wallet update krvana hoga.
-              
+              /* jb result auto kiya jaye tb pichhle pending result ko card number allocate ho jaye aur us result time pr jo bet lga ho usko winning card number ke according uslka result decleareed ho jaye
+               result table se sbhi record leke aaye jha result null ho
+               ab hr ek result ki time nikal kr us time se lge bet leke aaye bets table se 
+               ek empty array lekr usme sbhi card ki bet ko corresponding card pr rkh de .
+                ab us card me winning percentage ki logic ke hissan se bet ki status change krvana hai aur wallet update krvana hoga.   */
               
               $null_result = DB::table('results')->where('card_number','=',null)->orderBy('id','desc')->get();
                foreach($null_result as $result){
-                   dd($result);
+                    $card = [0,0,0,0,0,0,0,0,0,0,0,0];
+                    $sum = 0;
+                    $result_id = $result->id;
+                    $bet_result_time = $result->result_time;
+                    $bet_his = DB::table('bets')->where('result_time','=',$bet_result_time)->where('status',0)->get();
+                    
+                     foreach($bet_his as $bet){
+                           $bet_details = json_decode($bet->bet_details);
+                           foreach($bet_details as $bet_card){
+                               $card[(int)$bet_card->card_number - 1] =  $card[(int)$bet_card->card_number - 1] + (int)$bet_card->points*50;
+                               $sum +=(int)$bet_card->points*5;
+                           }
+                     }
+                    $threshold = $sum * 0.7;
+                    $matchingIndices = [];
+                
+                        foreach ($card as $index => $value) {
+                            if ($value <= $threshold) {
+                                $matchingIndices[] = $index;
+                            }
+                        }
+                        
+                        if (!empty($matchingIndices)) {
+                            $randomIndex = $matchingIndices[array_rand($matchingIndices)];
+                        } else {
+                                // First, check if there's any index in $card with status zero (value = 0)
+                                $zeroStatusIndices = [];
+                                foreach ($card as $index => $value) {
+                                    if ($value == 0) {
+                                        $zeroStatusIndices[] = $index;
+                                    }
+                                }
+                                
+                                // If there are indices with status zero, pick a random one
+                                if (!empty($zeroStatusIndices)) {
+                                    $randomIndex = $zeroStatusIndices[array_rand($zeroStatusIndices)];
+                                } else {
+                                    // If no zero-status index exists, sort by ascending order of card values and select the first one
+                                    asort($card);  // Sort array while maintaining index association
+                                    reset($card);  // Move the pointer to the first element
+                                    $randomIndex = key($card); // Get the index of the first element
+                                }
+                            }
+                            DB::table('results')->where('id',$result_id)->update(['card_number'=>$randomIndex+1]);
+                           $this->update_bet($randomIndex,$bet_result_time);
                }
               
-              
           } 
-           
-           
-           
-           
-           
-           
-           
-           
            
           if($a){
            return redirect()->back()->with('success','Updated successfully..');   
           }else{
              return redirect()->back()->with('error','Failed to  update..');   
           }
+    }
+    
+    
+    
+    protected function update_bet($randomIndex,$bet_result_time){
+                      $bet_his_all = DB::table('bets')->where('status',0)->where('result_time','=',$bet_result_time)->get();
+                if($bet_his_all->isNotEmpty()){
+                        foreach($bet_his_all as $item){
+                            $id = $item->id;
+                            $bet_detail = json_decode($item->bet_details);
+                            
+                          foreach($bet_detail as $value){
+                             $card_points = $value->points;
+                             $bet_card_number = $value->card_number;
+                             $win_points = $card_points*50;
+                             
+                            if($bet_card_number == ($randomIndex+1)){
+                                $update_bet = DB::table('bets')->where('id',$id)->update(['win_points'=>$win_points,'status'=>3]);
+                                break;
+                            }else{
+                                $update_bet = DB::table('bets')->where('id',$id)->update(['status'=>2]);
+                            }
+                          }
+                            
+                        }
+                }
     }
     
     
@@ -256,7 +315,8 @@ class AdminController extends Controller
     }
          public function cardfive(Request $request){
              $game_settings = DB::table('game_settings')->where('id',1)->first();
-           return view('prediction.12card5')->with('game_settings',$game_settings);
+             $users = DB::table('admins')->select('id','terminal_id')->where('status',1)->where('role_id',4)->get();
+           return view('prediction.12card5')->with('game_settings',$game_settings)->with('users',$users);
           }
     
      public function password(){

@@ -15,6 +15,10 @@
    <!-- Site Icon -->
    <link rel="icon" href="{{ asset('images/fevicon.png') }}" type="image/png" />
 
+
+<!--fontawasome cdn linkend--->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMr+ocSp6iAPycVepCdFZMJLd0Lf8MS/sYYY3tD" crossorigin="anonymous">
+
    <!-- Bootstrap CSS -->
    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
    <!-- Site CSS -->
@@ -96,6 +100,20 @@ color: #000; /* Default text color */
  }
  
    </style>
+   
+   
+ <style>
+    /* Using hover pseudo-class to apply the bg-danger */
+    .bg-danger-hover:hover {
+        background-color:#faebf4; /* This is the Bootstrap 'bg-danger' color */
+    }
+</style>  
+   
+   
+   
+   
+   
+   
 </head>
 
 <body class="dashboard dashboard_1">
