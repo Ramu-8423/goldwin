@@ -1,5 +1,12 @@
 @extends('admin.body.adminmaster')
 @section('content')
+<style>
+*{
+    margin:0;!important
+    padding:0;!important
+
+}
+</style>
 @if(session()->has('message'))
 <div class="alert alert-success">
     {{ session()->get('message') }}
@@ -12,10 +19,10 @@
     <!--abc-->
     <div class="row">
         <div class="col-md-12">
-            <div class="white_shd full margin_bottom_30">
-                <div class="full graph_head">
-                    <div class="heading1 margin_0">
-                        <div class="d-flex flex-wrap align-items-center">
+            <!--<div class="white_shd full margin_bottom_30">-->
+                <!--<div class="full graph_head">-->
+                    <!--<div class="heading1 margin_0">-->
+                        <div class="d-flex flex-wrap align-items-center mt-4">
                             @if($roles == 1)
                             <div class="d-flex flex-wrap ml-3">
                                 <select id="stockist-select" class="form-control select2 me-2" style="width: auto;">
@@ -29,12 +36,12 @@
                                 <select id="substockist-select" class="form-control select2 me-2" style="width: auto;">
                                     <option value="">Select Substockist</option>
                                 </select>
-                                <select id="user-select" class="form-control select2 me-2" style="width: auto;">
+                                <select id="user-select" class="form-control select2 me-2 " style="width: auto;">
                                     <option value="">Select User</option>
                                 </select>
                             </div>
                             @elseif($roles == 2)
-                            <div class="d-flex flex-wrap ml-3">
+                            <div class="d-flex flex-wrap ml-3 ">
                                 <select id="substockist-select" class="form-control select2 me-2" style="width: auto;">
                                     <option value="">Select Substockist</option>
                                     @foreach($admins as $admin)
@@ -48,7 +55,7 @@
                                 </select>
                             </div>
                             @endif
-                            <div class="d-flex flex-wrap justify-content-end align-items-center "
+                            <div class="d-flex flex-wrap justify-content-end align-items-center"
                                 style="margin-top:-5px;">
                                 <form action="{{ route('stokistlist') }}" method="GET" class="form-inline">
                                     <div class="input-group input-group-sm">
@@ -61,10 +68,9 @@
                                 <a href="{{ route('stokistlist') }}" class="btn btn-secondary btn-sm ml-3">Reset</a>
                             </div>
                         </div>
-                        <div class="mt-3 text-right">
+                        <div class="mt-3 text-right mb-4">
                             <form action="{{ route('stokistlist') }}" method="GET">
-
-                                <span class="mb-0">Users</span> <select id="terminal_id_dropdown" name="terminal_id"
+                                  <select id="terminal_id_dropdown" name="terminal_id"
                                     class="form-control select2" style="width: auto;">
                                     <option value="">All User Terminal</option>
                                     @foreach($admins as $admin)
@@ -77,8 +83,8 @@
                                     style="margin-top:-5px;">Search</button>
                             </form>
                         </div>
-                    </div>
-                    <div class="table_section padding_infor_info">
+                    <!--</div>-->
+                    <!--<div class="table_section padding_infor_info">-->
                         <div class="table-responsive">
                             <!-- Changed class to table-responsive for better responsiveness -->
                             <table class="table">
@@ -408,10 +414,9 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-
-                </div>
-            </div>
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
     </div>
     @endsection

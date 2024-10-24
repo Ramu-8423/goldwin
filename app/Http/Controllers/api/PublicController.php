@@ -30,11 +30,12 @@ class PublicController extends Controller
             $password = $request->password;
             
             $login_status = DB::table('admins')->where('terminal_id',$terminal_id)->where('password',$password)->where('status',1)->where('role_id',4)->first();
-            $game_status = DB::table('game_settings')->where('id',1)->value('status');
-            
+            $game_setting = DB::table('game_settings')->where('id',1)->first();
+            $game_status = $game_setting->status;
+            $site_message = $game_setting->site_message; 
            if($login_status){
                if($game_status==2){
-                   return response()->json(['status'=>400,'message'=>'The game is currently paused.','game_status'=>2]);
+                   return response()->json(['status'=>400,'message'=>$site_message,'game_status'=>2]);
                }else{
                     return response()->json(['status'=>200,'message'=>'login successfully.','id'=>$login_status->id,'terminal_id'=>$login_status->terminal_id,'game_status'=>1]);
                }
@@ -53,11 +54,14 @@ class PublicController extends Controller
                 return response()->json(['status' => 400,'message' => $validator->errors()->first(),'game_status'=>1]);
             }
      $data = DB::table('admins')->where('id',$id)->where('status',1)->where('role_id',4)->first();
-     $game_status = DB::table('game_settings')->where('id',1)->value('status');
      
+        $game_setting = DB::table('game_settings')->where('id',1)->first();
+        $game_status = $game_setting->status;
+        $site_message = $game_setting->site_message; 
+        
      if($data){
          if($game_status==2){
-            return response()->json(['status'=>200,'message'=>'The game is currently paused.','wallet'=>$data->wallet,'game_status'=>2]);
+            return response()->json(['status'=>200,'message'=>$site_message,'wallet'=>$data->wallet,'game_status'=>2]);
          }else{
              return response()->json(['status'=>200,'message'=>'Admin record found','wallet'=>$data->wallet,'game_status'=>1]);
          }

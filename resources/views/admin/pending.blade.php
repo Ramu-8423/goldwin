@@ -7,35 +7,40 @@
     </div>
 @endif
 
-<div class="container-fluid mt-4">
+<!--<div class="container-fluid mt-4">-->
+    <div class="row d-flex  mt-5">
+        <div class="ml-5"><a href="{{ route('user.pending',2) }}"><b  style="color:blue;">Pending</b></a></div>
+        <div class="ml-5"><a href="{{ route('user.pending',3) }}"><b style="color:blue;"> Reject</b></a></div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
-            <div class="white_shd full margin_bottom_30">
+            <!--<div class="white_shd full margin_bottom_30">-->
                 <div class="full graph_head">
-                    <div class="heading1 margin_0">
-                        <div class="container">
-                           <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                        <div class="container-fluid">
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex" style="gap: 20px;">
-                                <li class="nav-item">
-                                    <a class=" " href="{{ route('user.pending',2) }}">
-                                        <i class="mdi mdi-view-dashboard"></i>
-                                        <span>Pendings</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="" href="{{ route('user.pending',3) }}">
-                                        <i class="mdi mdi-view-dashboard"></i>
-                                        <span>Reject</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                     </nav>
+                  <!--  <div class="heading1 margin_0">
+                        <div class="container">-->
+                        <!--   <nav class="navbar navbar-expand-lg navbar-light bg-light">-->
+                        <!--<div class="container-fluid">-->
+                            <!--<ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex" style="gap: 20px;">-->
+                            <!--    <li class="nav-item">-->
+                            <!--        <a class=" " href="{{ route('user.pending',2) }}">-->
+                            <!--            <i class="mdi mdi-view-dashboard"></i>-->
+                            <!--            <span>Pendings</span>-->
+                            <!--        </a>-->
+                            <!--    </li>-->
+                            <!--    <li class="nav-item">-->
+                            <!--        <a class="" href="{{ route('user.pending',3) }}">-->
+                            <!--            <i class="mdi mdi-view-dashboard"></i>-->
+                            <!--            <span>Reject</span>-->
+                            <!--        </a>-->
+                            <!--    </li>-->
+                            <!--</ul>-->
+                     <!--   </div>-->
+                     <!--</nav>-->
 
 
-               </div>
-                    </div>
+               <!--</div>-->
+               <!--     </div>-->
                 </div>
                 <div class="table_section padding_infor_info">
                     <div class="table-responsive">
@@ -129,10 +134,10 @@
                        
                     </div>
                 </div>
-            </div>
+            <!--</div>-->
         </div>
     </div>
-</div>
+<!--</div>-->
 
 @endsection
 

@@ -21,6 +21,7 @@ class ReportController extends Controller
             date_default_timezone_set('Asia/Kolkata');
             $datetime = date('Y-m-d H:i:s');
             $newdate = date('Y-m-d');
+           $time = date('h:i:s A');
             
             $validator = Validator::make($request->all(), [
               'from' => ['required', 'date_format:Y-m-d'],
@@ -59,7 +60,7 @@ class ReportController extends Controller
                  $net_play_points = $play_points - $cancel_points;
                  $opt_play_points = $net_play_points - $claimed_points;
                 
-                 $discounted_points = 0;
+                 $discounted_points = $play_points*0.09;
                  $gross_points = $opt_play_points -  $discounted_points;
                  $bonus_points = 0;
                  $gift_points = 0;
@@ -113,7 +114,9 @@ class ReportController extends Controller
                 'add_points'=>$add_points,
                 'total_points'=>$total_points,
                 'used_points'=>$used_points,
-                'current_points'=>$current_points
+                'current_points'=>$current_points,
+                'current_time'=>$time,
+                'current_date'=>$newdate
                 ];
          
             

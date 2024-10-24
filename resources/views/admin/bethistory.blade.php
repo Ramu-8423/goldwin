@@ -1,9 +1,9 @@
 @extends('admin.body.adminmaster')
 @section('content')
-<div class="col-md-12 margin_top_30">
-    <div class="white_shd full margin_bottom_30">
+<!--<div class="col-md-12 margin_top_30">-->
+    <!--<div class="white_shd full margin_bottom_30">-->
         <div class="full graph_head">
-        <div class="container-fluid">
+        <!--<div class="container-fluid">-->
                @if($authrole == 1)
                 <form action="{{ route('admin.bethistory') }}" method="GET">
                    <div class="row justify-content-center">
@@ -166,11 +166,11 @@
                         </div>
                      </div>
                   </div>
-              </div>
+              <!--</div>-->
                 </form>
               @endif
         </div>
-    </div>
+    <!--</div>-->
     <div class="table_section padding_infor_info">
         <div class="table-responsive">
             <table id="example" class="table table-hover" style="white-space: nowrap;">
@@ -302,7 +302,7 @@
             </nav>
         </div>
     </div>
-</div>
+<!--</div>-->
 </div>
 
 <script>

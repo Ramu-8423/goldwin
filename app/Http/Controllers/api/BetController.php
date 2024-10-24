@@ -19,12 +19,25 @@ class BetController extends Controller
     }
     
             
-            protected function generateBarCodeNumber($column_name){
+        protected function generateBarCodeNumber($column_name) {
                 do {
-                    $barcodeNumber = mt_rand(100000, 999999);
-                    $exists = DB::table('bets')->where($column_name,$barcodeNumber)->exists();
-                } while ($exists); 
+                    $letters = '';
+                    for ($i = 0; $i < 4; $i++) {
+                        $letters .= chr(mt_rand(65, 90)); // ASCII values for A-Z
+                    }
+                    $digits = mt_rand(1000, 9999); // Generate a number between 1000 and 9999
+                    $barcodeNumber = $letters . $digits;
+                    $exists = DB::table('bets')->where($column_name, $barcodeNumber)->exists();
+                } while ($exists);
                 return $barcodeNumber;
+        }
+
+         protected function generateOrderId($column_name){
+                do {
+                    $orderid = mt_rand(100000, 999999);
+                    $exists = DB::table('bets')->where($column_name,$orderid)->exists();
+                } while ($exists); 
+                return $orderid;
             }
 
 
@@ -83,7 +96,7 @@ class BetController extends Controller
             $bet_details_array = json_decode($bet_details);
             
            $barcode_number = $this->generateBarCodeNumber('barcode_number');
-           $order_id = $this->generateBarCodeNumber('order_id');
+           $order_id = $this->generateOrderId('order_id');
 
 
             $user_details = DB::table('admins')->where('id',$user_id)->first();
@@ -93,9 +106,10 @@ class BetController extends Controller
             if($wallet<$total_points){
                 return response()->json(['status'=>400,'message'=>'Insufficient funds!']);
             }
+             $commission = $total_points*0.09;
         
             $update_wallet = DB::table('admins')->where('id',$user_id)->update([
-                'wallet'=>DB::raw("wallet - $total_points")
+                'wallet'=>DB::raw("wallet - ($total_points-$commission)")
                 ]);
                 
             // $insert_bet = DB::table('bets')->insert([
@@ -114,6 +128,7 @@ class BetController extends Controller
             
            $insert_bet = DB::table('bets')->insertGetId([
                     'user_id'=>$user_id,
+                    'commission'=>$commission,
                     'result_time' => $result_announce_time,
                     'quantity' => $quantity,
                     'total_points' => $total_points,
@@ -230,6 +245,8 @@ class BetController extends Controller
         		
         		$status = $bet_details->status;
         		
+        		dd($id,$user_id,$bet_details,$status);
+        		
         		
         		if($status == 3){
         		     $win_points = $bet_details->win_points;
@@ -331,21 +348,23 @@ class BetController extends Controller
                     }
                 }
                 
-                dd($min_modify_time,$max_modify_time);
+               
                 
                 /* three case possible - 1. if $user_id and $custom_date_time both empty then take all data of current time, if custom date is selected and user_id is empty then take aal data of that day, now if both are selected then take data of current bet of user-id   */
                      
                 $winning_per = DB::table('game_settings')->where('id',1)->value('winning_per');
                 
                  if($user_id&&!$custom_date_time){
+                    
                         $current_resultAnnouncementTime = $currentTime % 300 ==0?$periodStart:$resultAnnouncementTime;
-                        $custom_bet = DB::table('bets')->where('user_id',$user_id)->where('result_time','=',$current_resultAnnouncementTime)->where('status',0)->get();
-                        $total_purchase_point = DB::table('bets')->where('user_id',$user_id)->where('result_time','=',$current_resultAnnouncementTime)->where('status',0)->sum('total_points');
+                        $custom_bet = DB::table('bets')->where('user_id',$user_id)->where('result_time','=',$current_resultAnnouncementTime)->where('status','!=',1)->get();
+                        $total_purchase_point = DB::table('bets')->where('user_id',$user_id)->where('result_time','=',$current_resultAnnouncementTime)->where('status','!=',1)->sum('total_points');
                         $bet_log = $this->process_bet_log($custom_bet);
                  }elseif(($custom_date_time&&$user_id)||($custom_date_time&&!$user_id)){
-                        $custom_bet_query = DB::table('bets')->where('result_time','=',$max_modify_time)->where('status',0);
-                        $total_purchase_point_query = DB::table('bets')->where('result_time','=',$max_modify_time)->where('status',0);
-                        
+                     
+                        $custom_bet_query = DB::table('bets')->where('result_time','=',$max_modify_time)->where('status','!=',1);
+                        $total_purchase_point_query = DB::table('bets')->where('result_time','=',$max_modify_time)->where('status','!=',1);
+                    
                          if($user_id){
                              $custom_bet_query->where('user_id',$user_id);
                              $total_purchase_point_query->where('user_id',$user_id);
@@ -353,6 +372,7 @@ class BetController extends Controller
                         $custom_bet = $custom_bet_query->get();
                         $total_purchase_point = $total_purchase_point_query->sum('total_points');
                         $bet_log = $this->process_bet_log($custom_bet);
+                       
                  }else{
                         $total_purchase_point = DB::table('bet_logs')->sum('amount');
                         $bet_log = DB::table('bet_logs')->get();
@@ -387,13 +407,20 @@ class BetController extends Controller
                  
                      $result_time =$request->result_time;
                      $card_number = (string)$request->card_number;
+                     $user_id = $request->user_id;
+                     
                      $uinx_result_time = strtotime($result_time);
                      $adjustment = $uinx_result_time % 300;
-                 
-                    if($adjustment==0){
+                     
+                     if($adjustment==0){
                          $min_result_time = date('Y-m-d H:i:s', $uinx_result_time - $adjustment);
                          $max_result_time = $min_result_time;
-                          $bet_history = DB::table('bets')
+                     }else{
+                         $min_result_time = date('Y-m-d H:i:s', $uinx_result_time - $adjustment);
+                         $max_result_time = date('Y-m-d H:i:s', $uinx_result_time + (300 - $adjustment));
+                     }
+                     
+                     $bet_history_query = DB::table('bets')
                             ->join('admins', 'bets.user_id', '=', 'admins.id') // Join the main admin
                             ->leftJoin('admins as stockist_admin', 'admins.inside_stockist', '=', 'stockist_admin.id') // Join for stockist
                             ->leftJoin('admins as substockist_admin', 'admins.inside_substockist', '=', 'substockist_admin.id') // Join for substockist
@@ -407,35 +434,18 @@ class BetController extends Controller
                                 'bets.result_time as result_time',
                                 'bets.bet_details as bet_details'
                                 )
+                             ->where('bets.status','!=',1)
                             ->where('bets.result_time', '=', $max_result_time)
-                            ->whereJsonContains('bets.bet_details', ['card_number' => $card_number])
-                           ->get();
-                    }else{
-                        $min_result_time = date('Y-m-d H:i:s', $uinx_result_time - $adjustment);
-                        $max_result_time = date('Y-m-d H:i:s', $uinx_result_time + (300 - $adjustment));
-                       $custom_bet = DB::table('bets')->where('result_time','>',$min_result_time)->where('result_time','<=',$max_result_time)->get();
-                        $bet_history = DB::table('bets')
-                            ->join('admins', 'bets.user_id', '=', 'admins.id') // Join the main admin
-                            ->leftJoin('admins as stockist_admin', 'admins.inside_stockist', '=', 'stockist_admin.id') // Join for stockist
-                            ->leftJoin('admins as substockist_admin', 'admins.inside_substockist', '=', 'substockist_admin.id') // Join for substockist
-                            ->select(
-                                'stockist_admin.terminal_id as stockist_ter_id',
-                                'substockist_admin.terminal_id as substockist_ter_id',
-                                'admins.terminal_id as user_ter_id',
-                                'bets.win_points as win_points',
-                                'bets.status as bet_status',
-                                'bets.created_at as bet_time',
-                                'bets.result_time as result_time',
-                                'bets.bet_details as bet_details'
-                                )
-                            ->where('result_time','>',$min_result_time)
-                             ->where('result_time','<=',$max_result_time)
-                            ->whereJsonContains('bets.bet_details', ['card_number' => $card_number])
-                           ->get();
-                    }
-                    
+                            ->whereJsonContains('bets.bet_details', ['card_number' => $card_number]);
+                            
+                     if($user_id){
+                         $bet_history_query->where('bets.user_id',$user_id);
+                     }
+                     $bet_history = $bet_history_query->get();
+                 
                 $card = [ '1' => "JC", '2' => "JD", '3' => "JS", '4' => "JH", '5' => "QC", '6' => "QD",'7' => "QS", '8' => "QH", '9' => "KC", '10' => "KD", '11' => "KS", '12' => "KH"];
                $modified_result = [];
+               
                $card_name = $card[$card_number];
               foreach($bet_history as $item=>$value){
                     $result_card = json_decode($value->bet_details);

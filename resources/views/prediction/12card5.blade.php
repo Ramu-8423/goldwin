@@ -217,7 +217,7 @@
                    </div>
            </form>
            
-            <div class="table-responsive">
+            <div class="table-responsive mb-5">
                 <h3 class="text-center b-3">Bet Points Details</h3>
                 <table class="table table-hover" style="white-space: nowrap;">
                     <thead class="thead-dark">
@@ -245,34 +245,46 @@
 
   <!--<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>-->
 <script>
+
+     document.addEventListener('DOMContentLoaded', () => {
+                refreshData();
+                updateClock();
+                setInterval(updateClock, 1000); // Update clock every second
+                
+                $('#users-akash').select2({
+                placeholder: "All User Terminals",
+                allowClear: true
+                  });
+            });
+
             function refreshData() {
                 fetchData();
                 setInterval(fetchData, 3000); // Refresh every 3 seconds
             }
     
         function fetchData() {
-            const dateTimeValue = document.getElementById('custom_result_date_time').value; // Get the value from the input
-            const userId = document.getElementById('users-akash').value; // Get the value from the input
-             console.log(`custom datetime value is - ${dateTimeValue}`);
-             console.log(`users id is - ${userId}`);
-            fetch('api/fetch', {
-                method: 'POST', // Change to POST
-                headers: {
-                    'Content-Type': 'application/json', // Set the content type
-                },
-                body: JSON.stringify({ custom_date_time: dateTimeValue,user_id:userId}) // Include the parameter in the body
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Fetched data:', data);
-                if (data && data.bet_log) {
-                    updateBets(data.bet_log,data.result_time,data.total_purchase_point,data.system_winning); // Update the bets
-                } else {
-                    console.error('Data format is incorrect or bet_log is missing:', data);
-                }
-            })
-            .catch(error => console.error('Error fetching data:', error));
-       }
+                const dateTimeValue = document.getElementById('custom_result_date_time').value; // Get the value from the input
+                const userId = document.getElementById('users-akash').value; // Get the value from the input
+                 console.log(`custom datetime value is - ${dateTimeValue}`);
+                 console.log(`users id is - ${userId}`);
+                fetch('api/fetch', {
+                    method: 'POST', // Change to POST
+                    headers: {
+                        'Content-Type': 'application/json', // Set the content type
+                    },
+                    body: JSON.stringify({ custom_date_time: dateTimeValue,user_id:userId}) // Include the parameter in the body
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Fetched data:', data);
+                    if (data && data.bet_log) {
+                        updateBets(data.bet_log,data.result_time,data.total_purchase_point,data.system_winning); // Update the bets
+                    } else {
+                        console.error('Data format is incorrect or bet_log is missing:', data);
+                    }
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
     function updateBets(bet_log,result_time,total_purchase_point,system_winning) {
         console.log('Updating Bets:', bet_log);
         var amountdetailHTML = '';
@@ -302,6 +314,8 @@
     
     function point_details(card_number){
         const result_time =  document.getElementById('result_time').value; 
+        const userId = document.getElementById('users-akash').value;
+        
         console.log(`result_time is - ${result_time}  and card number is - ${card_number}`);
         
         fetch('api/point_details', {
@@ -309,7 +323,7 @@
                 headers: {
                     'Content-Type': 'application/json', // Set the content type
                 },
-                body: JSON.stringify({ result_time: result_time,card_number: card_number}) // Include the parameter in the body
+                body: JSON.stringify({ result_time: result_time,card_number: card_number,user_id:userId}) // Include the parameter in the body
             })
             .then(response => response.json())
             .then(data => {
@@ -377,17 +391,6 @@ function updatePointsDetailsError() {
         const timeString = `${hours}:${minutes}:${seconds}`;
         timerElement.textContent = timeString;
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        refreshData();
-        updateClock();
-        setInterval(updateClock, 1000); // Update clock every second
-        
-        $('#users-akash').select2({
-        placeholder: "All User Terminals",
-        allowClear: true
-    });
-    });
     
 </script>
 <script type="text/javascript">    

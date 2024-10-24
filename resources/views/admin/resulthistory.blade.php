@@ -2,13 +2,13 @@
 @section('content')
 
 <div class="col-md-12 margin_top_30">
-    <div class="white_shd full margin_bottom_30">
+    <!--<div class="white_shd full margin_bottom_30">-->
         <div class="full graph_head">
             <div class="heading1 margin_0">
                 <h2>Result History Table</h2>
             </div>
         </div>
-        <div class="padding_infor_info">
+        <!--<div class="padding_infor_info">-->
             <!-- Filter Section -->
             <form id="filterForm" action="{{route('result_history')}}" method="post">
                 @csrf
@@ -34,8 +34,8 @@
             </form>
             
             <!-- Table Section -->
-            <div class="table-responsive-sm">
-                <table class="table">
+            <div class="table-responsive-sm mb-5">
+                <table class="table" style="white-space: nowrap;">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -142,8 +142,8 @@
                 
                 
             </div>
-        </div>
-    </div>
+        <!--</div>-->
+    <!--</div>-->
 </div>
 
 @endsection

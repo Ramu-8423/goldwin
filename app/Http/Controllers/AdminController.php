@@ -734,7 +734,7 @@ public function addwallet(Request $request, $id)
     ]);
 
     $auth = $request->authid;
-   
+    $role_id=session('role_id');
     $admin = Admin::findOrFail($id);
     $authAdmin = Admin::findOrFail(Session::get('Auth_id'));
     $authRole = $authAdmin->role_id;
@@ -769,7 +769,7 @@ public function addwallet(Request $request, $id)
     }
     $transaction = new TransactionHistory();
     $transaction->user_id = $id;
-    $transaction->transaction_perform_by = $auth;
+    $transaction->transaction_perform_by = $role_id;
     $transaction->amount = $request->amount;
     $transaction->result1add2deduct = $operation;
     $transaction->created_at = now();

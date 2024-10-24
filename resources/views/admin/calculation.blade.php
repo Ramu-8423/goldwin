@@ -2,8 +2,8 @@
 @section('content')
 
 <div class="col-md-12 margin_top_30">
-    <div class="white_shd full margin_bottom_30">
-        <div class="full graph_head">
+    <!--<div class="white_shd full margin_bottom_30">-->
+        <!--<div class="full graph_head">-->
             <div class="heading1 margin_0">
                 @if($authrole == 1)
                 <form action="{{ route('admin.calculation') }}" method="GET">
@@ -41,9 +41,8 @@
                         <!-- Buttons Section -->
                         <div class="col-sm-3 d-flex align-items-center justify-content-center mb-3">
                             <button type="submit" class="btn btn-primary btn-sm mr-2">Search</button>
-                            <a href="{{route('admin.bethistory')}}" class="btn btn-secondary btn-sm"
+                            <a href="{{route('admin.calculation')}}" class="btn btn-secondary btn-sm"
                                 onclick="reloadPage()">Reset</a>
-
                         </div>
                     </div>
                 </form>
@@ -75,7 +74,7 @@
                         <div class="col-sm-3 align-items-center">
                             <div class="d-flex ">
                                 <button type="submit" class="btn btn-primary btn-sm mt-4 ">Search</button>
-                                <a href="{{route('admin.bethistory')}}"><button
+                                <a href="{{route('admin.calculation')}}"><button
                                         class="btn btn-secondary  btn-sm mt-4  ml-1">Reset</button>
                             </div></a>
                         </div>
@@ -130,8 +129,8 @@
 
                 @if($authrole != 3)
                 <form action="{{ route('admin.calculation') }}" method="GET">
-                    <div class="row ml-4">
-                        <div class="col-sm-2 align-items-center">
+                    <div class="row ml-2">
+                        <div class="col-sm-3 align-items-center">
                             <div class=" d-flex align-items-center mt-2">
                                 <select id="user-selectmenual" name="all_user_search_id" class="form-control select2"
                                     style="width:200px;">
@@ -145,7 +144,7 @@
                             </div>
                         </div>
 
-                        <div class=" col-sm-3 col-md-2 ml-5 align-items-center">
+                        <div class="col-sm-3  ml-5 align-items-center">
                             <select name="bet_status" id="status" class="form-control form-control-sm mt-2 ">
                                 <option value="">Status</option>
                                 <option value="0">Pending</option>
@@ -169,7 +168,7 @@
                 @endif
             </div>
 
-        </div>
+        <!--</div>-->
         <div class="row">
             <!-- Card for Pending Bets -->
 
@@ -232,10 +231,10 @@
             </div>
 
         </div>
-        <div class="table_section padding_infor_info">
-            <div class="table-responsive">
-                <table id="example" class="table table-hover" style="white-space: nowrap;">
-                    <thead>
+        <!--<div class="table_section padding_infor_info">-->
+            <div class="table-responsive mb-5">
+                <table id="example" class="table table-striped" style="white-space: nowrap;">
+                    <thead class="table-dark">
                         <tr>
                             <th>Sr.Num.</th>
                             <th>Pin</th>
@@ -317,8 +316,8 @@
 
 
             </div>
-        </div>
-    </div>
+        <!--</div>-->
+    <!--</div>-->
 </div>
 </div>
 
